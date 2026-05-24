@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage 
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="EcoAppMobile.RegisterPage"
+    Title="Регистрация"
+    BackgroundColor="{StaticResource BackgroundDark}">
+
+    <Grid>
+        <BoxView>
+            <BoxView.Background>
+                <RadialGradientBrush Center="0.5,0.2" Radius="0.8">
+                    <GradientStop Offset="0" Color="#1E1B4B"/>
+                    <GradientStop Offset="1" Color="Transparent"/>
+                </RadialGradientBrush>
+            </BoxView.Background>
+        </BoxView>
+
+        <ScrollView>
+            <VerticalStackLayout Padding="32,40" Spacing="20">
+
+                <Label 
+                    Text="Создание аккаунта" 
+                    FontSize="24" 
+                    FontAttributes="Bold"
+                    TextColor="White"
+                    HorizontalOptions="Center"/>
+
+                <Border Style="{StaticResource CardStyle}" Padding="24">
+                    <VerticalStackLayout Spacing="18">
+
+                        <Border Style="{StaticResource InputContainerStyle}" HeightRequest="60">
+                            <Grid ColumnDefinitions="Auto,*" Padding="16,0">
+                                <Label Text="👤" FontSize="22" VerticalOptions="Center"/>
+                                <Entry Grid.Column="1" x:Name="NameEntry" Placeholder="Имя" 
+                                       TextColor="{StaticResource TextPrimary}"
+                                       PlaceholderColor="{StaticResource TextMuted}"
+                                       BackgroundColor="Transparent"
+                                       VerticalOptions="Center"
+                                       FontSize="16"/>
+                            </Grid>
+                        </Border>
+
+                        <Border Style="{StaticResource InputContainerStyle}" HeightRequest="60">
+                            <Grid ColumnDefinitions="Auto,*" Padding="16,0">
+                                <Label Text="✉️" FontSize="22" VerticalOptions="Center"/>
+                                <Entry Grid.Column="1" x:Name="EmailEntry" Placeholder="Email" Keyboard="Email"
+                                       TextColor="{StaticResource TextPrimary}"
+                                       PlaceholderColor="{StaticResource TextMuted}"
+                                       BackgroundColor="Transparent"
+                                       VerticalOptions="Center"
+                                       FontSize="16"/>
+                            </Grid>
+                        </Border>
+
+                        <Border Style="{StaticResource InputContainerStyle}" HeightRequest="60">
+                            <Grid ColumnDefinitions="Auto,*" Padding="16,0">
+                                <Label Text="📱" FontSize="22" VerticalOptions="Center"/>
+                                <Entry Grid.Column="1" x:Name="PhoneEntry" Placeholder="Телефон (+375...)"
+                                       TextColor="{StaticResource TextPrimary}"
+                                       PlaceholderColor="{StaticResource TextMuted}"
+                                       BackgroundColor="Transparent"
+                                       VerticalOptions="Center"
+                                       FontSize="16"
+                                       Keyboard="Telephone"/>
+                            </Grid>
+                        </Border>
+
+                        <!-- Пароль с глазиком -->
+                        <Border Style="{StaticResource InputContainerStyle}" HeightRequest="60">
+                            <Grid ColumnDefinitions="Auto,*,Auto" Padding="16,0">
+                                <Label Text="🔒" FontSize="22" VerticalOptions="Center"/>
+                                <Entry Grid.Column="1" x:Name="PasswordEntry" Placeholder="Пароль" IsPassword="True"
+                                       TextColor="{StaticResource TextPrimary}"
+                                       PlaceholderColor="{StaticResource TextMuted}"
+                                       BackgroundColor="Transparent"
+                                       VerticalOptions="Center"
+                                       FontSize="16"/>
+                                <Label 
+                                    Grid.Column="2"
+                                    x:Name="RegEyeIcon"
+                                    Text="👁️" 
+                                    FontSize="22"
+                                    VerticalOptions="Center"
+                                    TextColor="{StaticResource TextMuted}">
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="OnRegEyeTapped"/>
+                                    </Label.GestureRecognizers>
+                                </Label>
+                            </Grid>
+                        </Border>
+
+                        <!-- Подтверждение пароля -->
+                        <Border Style="{StaticResource InputContainerStyle}" HeightRequest="60">
+                            <Grid ColumnDefinitions="Auto,*" Padding="16,0">
+                                <Label Text="🔐" FontSize="22" VerticalOptions="Center"/>
+                                <Entry Grid.Column="1" x:Name="ConfirmPasswordEntry" Placeholder="Подтвердите пароль" IsPassword="True"
+                                       TextColor="{StaticResource TextPrimary}"
+                                       PlaceholderColor="{StaticResource TextMuted}"
+                                       BackgroundColor="Transparent"
+                                       VerticalOptions="Center"
+                                       FontSize="16"/>
+                            </Grid>
+                        </Border>
+
+                        <Button 
+                            Text="Создать аккаунт"
+                            Style="{StaticResource PrimaryButton}"
+                            Clicked="OnRegisterClicked"
+                            Margin="0,8,0,0"/>
+
+                    </VerticalStackLayout>
+                </Border>
+
+                <Button 
+                    Text="Уже есть аккаунт"
+                    BackgroundColor="Transparent"
+                    TextColor="{StaticResource TextSecondary}"
+                    Clicked="OnBackClicked"/>
+
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+
+</ContentPage>

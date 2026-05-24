@@ -1,0 +1,6 @@
+<Solution>
+  <Folder Name="/EcoApp.API/">
+    <Project Path="EcoApp.API/EcoApp.API/EcoApp.API.csproj" />
+  </Folder>
+  <Project Path="EcoAppMobile/EcoAppMobile.csproj" />
+</Solution>

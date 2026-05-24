@@ -1,0 +1,145 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage 
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="EcoAppMobile.MainPage"
+    Title="Вход"
+    BackgroundColor="{StaticResource BackgroundDark}">
+
+    <Grid>
+        <!-- Фоновый градиент -->
+        <BoxView>
+            <BoxView.Background>
+                <RadialGradientBrush Center="0.5,0.3" Radius="0.8">
+                    <GradientStop Offset="0" Color="#1E1B4B"/>
+                    <GradientStop Offset="1" Color="Transparent"/>
+                </RadialGradientBrush>
+            </BoxView.Background>
+        </BoxView>
+
+        <ScrollView>
+            <VerticalStackLayout Padding="40,40" Spacing="24" VerticalOptions="Center">
+
+                <!-- ЛОГО -->
+                <Border 
+                    WidthRequest="200" 
+                    HeightRequest="200"
+                    StrokeShape="RoundRectangle 100"
+                    BackgroundColor="#1E1B4B"
+                    Padding="0"
+                    HorizontalOptions="Center">
+                    <Image 
+                        Source="logo.png"
+                        Aspect="AspectFill"
+                        Margin="0"/>
+                </Border>
+
+                <VerticalStackLayout Spacing="8" HorizontalOptions="Center">
+                    <Label 
+                        Text="Защити природу вместе с нами" 
+                        FontSize="16"
+                        FontAttributes="Bold"
+                        TextColor="White"
+                        HorizontalOptions="Center"
+                        Margin="0,8,0,0"/>
+                </VerticalStackLayout>
+
+                <!-- Форма входа -->
+                <Border 
+                    Style="{StaticResource CardStyle}"
+                    Margin="0,20,0,0"
+                    Padding="24">
+                    <VerticalStackLayout Spacing="20">
+
+                        <Label 
+                            Text="Вход в аккаунт" 
+                            FontSize="22"
+                            FontAttributes="Bold"
+                            TextColor="White"
+                            HorizontalOptions="Center"
+                            Margin="0,0,0,8"/>
+
+                        <!-- Email -->
+                        <Border 
+                            Style="{StaticResource InputContainerStyle}"
+                            HeightRequest="60">
+                            <Grid ColumnDefinitions="Auto,*" Padding="16,0">
+                                <Label 
+                                    Grid.Column="0"
+                                    Text="✉️" 
+                                    FontSize="22"
+                                    VerticalOptions="Center"/>
+                                <Entry 
+                                    Grid.Column="1"
+                                    x:Name="EmailEntry"
+                                    Placeholder="Email"
+                                    Keyboard="Email"
+                                    TextColor="{StaticResource TextPrimary}"
+                                    PlaceholderColor="{StaticResource TextMuted}"
+                                    BackgroundColor="Transparent"
+                                    VerticalOptions="Center"
+                                    FontSize="16"/>
+                            </Grid>
+                        </Border>
+
+                        <!-- Пароль с глазиком -->
+                        <Border 
+                            Style="{StaticResource InputContainerStyle}"
+                            HeightRequest="60">
+                            <Grid ColumnDefinitions="Auto,*,Auto" Padding="16,0">
+                                <Label 
+                                    Grid.Column="0"
+                                    Text="🔒" 
+                                    FontSize="22"
+                                    VerticalOptions="Center"/>
+                                <Entry 
+                                    Grid.Column="1"
+                                    x:Name="PasswordEntry"
+                                    Placeholder="Пароль"
+                                    IsPassword="True"
+                                    TextColor="{StaticResource TextPrimary}"
+                                    PlaceholderColor="{StaticResource TextMuted}"
+                                    BackgroundColor="Transparent"
+                                    VerticalOptions="Center"
+                                    FontSize="16"/>
+                                <Label 
+                                    Grid.Column="2"
+                                    x:Name="EyeIcon"
+                                    Text="👁️" 
+                                    FontSize="22"
+                                    VerticalOptions="Center"
+                                    TextColor="{StaticResource TextMuted}">
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="OnEyeTapped"/>
+                                    </Label.GestureRecognizers>
+                                </Label>
+                            </Grid>
+                        </Border>
+
+                        <Button 
+                            Text="Войти"
+                            Style="{StaticResource PrimaryButton}"
+                            Clicked="OnLoginClicked"
+                            Margin="0,8,0,0"/>
+
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Регистрация -->
+                <Button 
+                    Text="Создать аккаунт"
+                    Style="{StaticResource SecondaryButton}"
+                    Clicked="OnRegisterClicked"/>
+
+                <Label 
+                    Text="v1.0.0" 
+                    TextColor="{StaticResource TextMuted}"
+                    FontSize="12"
+                    HorizontalOptions="Center"
+                    Margin="0,20"/>
+
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+
+</ContentPage>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage 
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:maps="http://schemas.microsoft.com/dotnet/2021/maui/maps"
+    x:Class="EcoAppMobile.MapPage"
+    Title="Карта">
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- ПАНЕЛЬ ФИЛЬТРОВ -->
+        <Border 
+            Grid.Row="0"
+            BackgroundColor="{StaticResource SurfaceDark}"
+            Stroke="{StaticResource BorderColor}"
+            StrokeThickness="1"
+            Padding="12"
+            Margin="12,12,12,0"
+            StrokeShape="RoundRectangle 16"
+            ZIndex="1">
+
+            <ScrollView Orientation="Horizontal">
+                <HorizontalStackLayout Spacing="8" x:Name="FilterContainer">
+
+                    <Button 
+                        x:Name="BtnAll"
+                        Text="Все"
+                        BackgroundColor="{StaticResource PrimaryPurple}"
+                        TextColor="White"
+                        CornerRadius="20"
+                        HeightRequest="40"
+                        Padding="16,0"
+                        FontSize="13"
+                        FontAttributes="Bold"
+                        Clicked="OnFilterClicked"/>
+
+                    <Button 
+                        x:Name="BtnRecycling"
+                        Text="Переработка"
+                        BackgroundColor="{StaticResource SurfaceElevated}"
+                        TextColor="{StaticResource TextSecondary}"
+                        CornerRadius="20"
+                        HeightRequest="40"
+                        Padding="16,0"
+                        FontSize="13"
+                        Clicked="OnFilterClicked"/>
+
+                    <Button 
+                        x:Name="BtnCharging"
+                        Text="Зарядки"
+                        BackgroundColor="{StaticResource SurfaceElevated}"
+                        TextColor="{StaticResource TextSecondary}"
+                        CornerRadius="20"
+                        HeightRequest="40"
+                        Padding="16,0"
+                        FontSize="13"
+                        Clicked="OnFilterClicked"/>
+
+                    <Button 
+                        x:Name="BtnShelter"
+                        Text="Приюты"
+                        BackgroundColor="{StaticResource SurfaceElevated}"
+                        TextColor="{StaticResource TextSecondary}"
+                        CornerRadius="20"
+                        HeightRequest="40"
+                        Padding="16,0"
+                        FontSize="13"
+                        Clicked="OnFilterClicked"/>
+
+                </HorizontalStackLayout>
+            </ScrollView>
+        </Border>
+
+        <!-- КАРТА -->
+        <maps:Map 
+            Grid.Row="1"
+            x:Name="MyMap" 
+            MapType="Street"
+            Margin="0,-20,0,0"/>
+
+    </Grid>
+
+    </ContentPage>

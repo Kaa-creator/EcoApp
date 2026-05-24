@@ -1,0 +1,399 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🛡️ Проверка заданий</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #1a1a2e;
+            color: white;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            color: #6A0DAD;
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            background: #2a2a3e;
+            border: 2px solid #6A0DAD;
+            border-radius: 8px;
+            cursor: pointer;
+            color: white;
+            font-weight: bold;
+        }
+
+            .tab.active {
+                background: #6A0DAD;
+            }
+
+            .tab:hover {
+                opacity: 0.8;
+            }
+
+        .stats {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #888;
+        }
+
+        .filters {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+            .filters select {
+                padding: 8px 15px;
+                background: #2a2a3e;
+                color: white;
+                border: 2px solid #6A0DAD;
+                border-radius: 8px;
+                font-size: 14px;
+            }
+
+        .report {
+            background: #2a2a3e;
+            border: 2px solid #6A0DAD;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+            .report.approved {
+                border-color: #4CAF50;
+            }
+
+            .report.rejected {
+                border-color: #ff4444;
+            }
+
+        .report-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .user-info h3 {
+            color: #4CAF50;
+            margin-bottom: 5px;
+        }
+
+        .points {
+            background: #4CAF50;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        .task-title {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: white;
+        }
+
+        .comment {
+            color: #aaa;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+
+        .photo-container {
+            margin-bottom: 15px;
+        }
+
+        .photo {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 10px;
+            border: 2px solid #4CAF50;
+            cursor: pointer;
+        }
+
+        .no-photo {
+            color: #888;
+            font-style: italic;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: opacity 0.2s;
+        }
+
+            button:hover {
+                opacity: 0.8;
+            }
+
+        .approve {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .reject {
+            background: #ff4444;
+            color: white;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .status-approved {
+            background: #4CAF50;
+        }
+
+        .status-rejected {
+            background: #ff4444;
+        }
+
+        .empty {
+            text-align: center;
+            color: #888;
+            padding: 50px;
+            font-size: 18px;
+        }
+
+        .date {
+            color: #666;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🛡️ Панель администратора</h1>
+
+    <div class="tabs">
+        <div class="tab active" onclick="switchTab('pending')">⏳ На проверке</div>
+        <div class="tab" onclick="switchTab('history')">📜 История</div>
+    </div>
+
+    <div class="stats" id="stats">Загрузка...</div>
+
+    <div class="filters" id="filters" style="display: none;">
+        <select onchange="loadHistory()" id="statusFilter">
+            <option value="">Все статусы</option>
+            <option value="Approved">✅ Одобренные</option>
+            <option value="Rejected">❌ Отклоненные</option>
+        </select>
+    </div>
+
+    <div id="reports">Загрузка...</div>
+
+    <script>const API_URL = '';
+        let currentTab = 'pending';
+
+        function switchTab(tab) {
+            currentTab = tab;
+
+            // Обновляем стили вкладок
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Показываем/скрываем фильтры
+            document.getElementById('filters').style.display = tab === 'history' ? 'block' : 'none';
+
+            // Загружаем данные
+            if (tab === 'pending') {
+                loadPending();
+            } else {
+                loadHistory();
+            }
+        }
+
+        async function loadPending() {
+            const container = document.getElementById('reports');
+            const stats = document.getElementById('stats');
+
+            try {
+                const response = await fetch(`${API_URL}/api/TaskReports/pending`);
+                const reports = await response.json();
+
+                stats.textContent = `⏳ Заданий на проверке: ${reports.length}`;
+
+                if (reports.length === 0) {
+                    container.innerHTML = '<div class="empty">✅ Все задания проверены!</div>';
+                    return;
+                }
+
+                container.innerHTML = reports.map(r => `
+                    <div class="report" id="report-${r.id}">
+                        <div class="report-header">
+                            <div class="user-info">
+                                <h3>👤 ${r.userName || 'Пользователь ' + r.userId}</h3>
+                                <div>ID: ${r.userId}</div>
+                            </div>
+                            <div class="points">+${r.taskPoints} баллов</div>
+                        </div>
+
+                        <div class="task-title">📋 ${r.taskTitle}</div>
+                        <div class="comment">💬 ${r.comment || 'Без комментария'}</div>
+
+                        <div class="photo-container">
+                            ${r.photoUrl ?
+                                `<img src="${r.fullPhotoUrl}" class="photo" onclick="window.open('${r.fullPhotoUrl}', '_blank')" title="Кликни для увеличения">` :
+                                '<div class="no-photo">📷 Без фото</div>'
+                            }
+                        </div>
+
+                        <div class="date">📅 ${new Date(r.createdAt).toLocaleString('ru-RU')}</div>
+
+                        <div class="buttons">
+                            <button class="approve" onclick="approve(${r.id})">
+                                ✅ Одобрить
+                            </button>
+                            <button class="reject" onclick="reject(${r.id})">
+                                ❌ Отклонить
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+
+            } catch (error) {
+                container.innerHTML = `<div class="empty">Ошибка: ${error.message}</div>`;
+            }
+        }
+
+        async function loadHistory() {
+            const container = document.getElementById('reports');
+            const stats = document.getElementById('stats');
+            const statusFilter = document.getElementById('statusFilter').value;
+
+            try {
+                let url = `${API_URL}/api/TaskReports/history`;
+                if (statusFilter) {
+                    url += `?status=${statusFilter}`;
+                }
+
+                const response = await fetch(url);
+                const reports = await response.json();
+
+                const approvedCount = reports.filter(r => r.status === 'Approved').length;
+                const rejectedCount = reports.filter(r => r.status === 'Rejected').length;
+
+                stats.innerHTML = `📜 История: <span style="color: #4CAF50">${approvedCount} одобрено</span> | <span style="color: #ff4444">${rejectedCount} отклонено</span>`;
+
+                if (reports.length === 0) {
+                    container.innerHTML = '<div class="empty">📭 История пуста</div>';
+                    return;
+                }
+
+                container.innerHTML = reports.map(r => `
+                    <div class="report ${r.status.toLowerCase()}">
+                        <div class="report-header">
+                            <div class="user-info">
+                                <h3>👤 ${r.userName || 'Пользователь ' + r.userId}</h3>
+                                <div>ID: ${r.userId}</div>
+                            </div>
+                            <div class="status-badge status-${r.status.toLowerCase()}">
+                                ${r.status === 'Approved' ? '✅ Одобрено' : '❌ Отклонено'}
+                            </div>
+                        </div>
+
+                        <div class="task-title">📋 ${r.taskTitle}</div>
+                        <div class="comment">💬 ${r.comment || 'Без комментария'}</div>
+
+                        ${r.status === 'Approved' ? `<div style="color: #4CAF50; font-weight: bold;">🎁 Начислено: ${r.taskPoints} баллов</div>` : ''}
+
+                        <div class="date">📅 ${new Date(r.createdAt).toLocaleString('ru-RU')}</div>
+                    </div>
+                `).join('');
+
+            } catch (error) {
+                container.innerHTML = `<div class="empty">Ошибка: ${error.message}</div>`;
+            }
+        }
+
+        async function approve(id) {
+            if (!confirm('Одобрить задание и начислить баллы?')) return;
+
+            try {
+                const response = await fetch(`${API_URL}/api/TaskReports/${id}/approve`, {
+                    method: 'PUT'
+                });
+
+                if (response.ok) {
+                    const card = document.getElementById(`report-${id}`);
+                    card.style.opacity = '0';
+                    setTimeout(() => {
+                        loadPending();
+                    }, 300);
+                } else {
+                    alert('Ошибка при одобрении');
+                }
+            } catch (error) {
+                alert('Ошибка: ' + error.message);
+            }
+        }
+
+        async function reject(id) {
+            if (!confirm('Отклонить задание?')) return;
+
+            try {
+                const response = await fetch(`${API_URL}/api/TaskReports/${id}/reject`, {
+                    method: 'PUT'
+                });
+
+                if (response.ok) {
+                    const card = document.getElementById(`report-${id}`);
+                    card.style.opacity = '0';
+                    setTimeout(() => {
+                        loadPending();
+                    }, 300);
+                } else {
+                    alert('Ошибка при отклонении');
+                }
+            } catch (error) {
+                alert('Ошибка: ' + error.message);
+            }
+        }
+
+        // Автообновление каждые 30 секунд (только для вкладки "на проверке")
+        setInterval(() => {
+            if (currentTab === 'pending') {
+                loadPending();
+            }
+        }, 30000);
+
+        // Первая загрузка
+        loadPending();</script>
+</body>
+</html>

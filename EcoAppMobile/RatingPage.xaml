@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage 
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="EcoAppMobile.RatingPage"
+    Title="Рейтинг"
+    BackgroundColor="{StaticResource BackgroundDark}">
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- ПОДИУМ ТОП-3 -->
+        <Grid 
+            Grid.Row="0"
+            HeightRequest="200"
+            Margin="16,16,16,0"
+            ColumnDefinitions="*,*,*">
+
+            <!-- 2 МЕСТО -->
+            <VerticalStackLayout Grid.Column="0" VerticalOptions="End" Spacing="8" Margin="0,0,4,0">
+                <Border 
+                    BackgroundColor="{StaticResource SurfaceElevated}"
+                    Stroke="{StaticResource PrimaryPurple}"
+                    StrokeThickness="2"
+                    StrokeShape="RoundRectangle 16"
+                    Padding="12"
+                    VerticalOptions="End">
+                    <VerticalStackLayout HorizontalOptions="Center" Spacing="4">
+                        <Label Text="🥈" FontSize="32" HorizontalOptions="Center"/>
+                        <Label 
+                            x:Name="SecondName"
+                            Text="—" 
+                            TextColor="White"
+                            FontAttributes="Bold"
+                            FontSize="12"
+                            HorizontalOptions="Center"
+                            MaxLines="1"
+                            LineBreakMode="TailTruncation"/>
+                        <Label 
+                            x:Name="SecondPoints"
+                            Text="0" 
+                            TextColor="{StaticResource PrimaryPurpleLight}"
+                            FontAttributes="Bold"
+                            FontSize="14"
+                            HorizontalOptions="Center"/>
+                    </VerticalStackLayout>
+                </Border>
+                <BoxView 
+                    HeightRequest="60" 
+                    Color="{StaticResource PrimaryPurple}"
+                    CornerRadius="8,8,0,0"/>
+            </VerticalStackLayout>
+
+            <!-- 1 МЕСТО -->
+            <VerticalStackLayout Grid.Column="1" VerticalOptions="End" Spacing="8" Margin="4,0">
+                <Border 
+                    BackgroundColor="{StaticResource SurfaceElevated}"
+                    Stroke="{StaticResource AccentGreen}"
+                    StrokeThickness="3"
+                    StrokeShape="RoundRectangle 16"
+                    Padding="16"
+                    VerticalOptions="End">
+                    <VerticalStackLayout HorizontalOptions="Center" Spacing="4">
+                        <Label Text="🥇" FontSize="40" HorizontalOptions="Center"/>
+                        <Label 
+                            x:Name="FirstName"
+                            Text="—" 
+                            TextColor="White"
+                            FontAttributes="Bold"
+                            FontSize="14"
+                            HorizontalOptions="Center"
+                            MaxLines="1"
+                            LineBreakMode="TailTruncation"/>
+                        <Label 
+                            x:Name="FirstPoints"
+                            Text="0" 
+                            TextColor="{StaticResource AccentGreen}"
+                            FontAttributes="Bold"
+                            FontSize="18"
+                            HorizontalOptions="Center"/>
+                    </VerticalStackLayout>
+                </Border>
+                <BoxView 
+                    HeightRequest="90" 
+                    Color="{StaticResource AccentGreen}"
+                    CornerRadius="8,8,0,0"/>
+            </VerticalStackLayout>
+
+            <!-- 3 МЕСТО -->
+            <VerticalStackLayout Grid.Column="2" VerticalOptions="End" Spacing="8" Margin="4,0,0,0">
+                <Border 
+                    BackgroundColor="{StaticResource SurfaceElevated}"
+                    Stroke="{StaticResource AccentOrange}"
+                    StrokeThickness="2"
+                    StrokeShape="RoundRectangle 16"
+                    Padding="12"
+                    VerticalOptions="End">
+                    <VerticalStackLayout HorizontalOptions="Center" Spacing="4">
+                        <Label Text="🥉" FontSize="32" HorizontalOptions="Center"/>
+                        <Label 
+                            x:Name="ThirdName"
+                            Text="—" 
+                            TextColor="White"
+                            FontAttributes="Bold"
+                            FontSize="12"
+                            HorizontalOptions="Center"
+                            MaxLines="1"
+                            LineBreakMode="TailTruncation"/>
+                        <Label 
+                            x:Name="ThirdPoints"
+                            Text="0" 
+                            TextColor="{StaticResource AccentOrange}"
+                            FontAttributes="Bold"
+                            FontSize="14"
+                            HorizontalOptions="Center"/>
+                    </VerticalStackLayout>
+                </Border>
+                <BoxView 
+                    HeightRequest="40" 
+                    Color="{StaticResource AccentOrange}"
+                    CornerRadius="8,8,0,0"/>
+            </VerticalStackLayout>
+
+        </Grid>
+
+        <!-- ОСТАЛЬНЫЕ УЧАСТНИКИ -->
+        <CollectionView 
+            Grid.Row="1"
+            x:Name="LeaderboardList"
+            Margin="16,20,16,16">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border 
+                        Background="{StaticResource CardGradient}"
+                        Stroke="{StaticResource BorderColor}"
+                        StrokeThickness="1"
+                        Padding="16"
+                        Margin="0,6"
+                        StrokeShape="RoundRectangle 16">
+
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+
+                            <Border 
+                                Grid.Column="0"
+                                WidthRequest="36"
+                                HeightRequest="36"
+                                BackgroundColor="{StaticResource SurfaceElevated}"
+                                StrokeShape="RoundRectangle 18">
+                                <Label 
+                                    Text="{Binding PlaceNumber}" 
+                                    TextColor="{StaticResource TextSecondary}"
+                                    FontAttributes="Bold"
+                                    FontSize="14"
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center"/>
+                            </Border>
+
+                            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                                <Label 
+                                    Text="{Binding Name}" 
+                                    TextColor="White"
+                                    FontAttributes="Bold"
+                                    FontSize="16"/>
+                                <Label 
+                                    Text="{Binding LevelTag}" 
+                                    TextColor="{StaticResource TextMuted}"
+                                    FontSize="12"/>
+                            </VerticalStackLayout>
+
+                            <Border 
+                                Grid.Column="2"
+                                BackgroundColor="#7C3AED30"
+                                StrokeShape="RoundRectangle 12"
+                                Padding="12,6">
+                                <Label 
+                                    Text="{Binding Points, StringFormat='{0} 🌟'}" 
+                                    TextColor="{StaticResource PrimaryPurpleLight}"
+                                    FontAttributes="Bold"
+                                    FontSize="14"/>
+                            </Border>
+
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </Grid>
+
+    </ContentPage>

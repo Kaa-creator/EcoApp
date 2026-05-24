@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage 
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="EcoAppMobile.EventsPage"
+    Title="Акции"
+    BackgroundColor="{StaticResource BackgroundDark}">
+
+    <Grid RowDefinitions="Auto,Auto,*">
+
+        <!-- ШАПКА -->
+        <Border 
+            Grid.Row="0"
+            Background="{StaticResource PurpleGradient}"
+            StrokeShape="RoundRectangle 0,0,24,24"
+            Padding="20"
+            Margin="0,0,0,12">
+
+            <VerticalStackLayout Spacing="4">
+                <Label 
+                    Text="🎉 Эко-мероприятия" 
+                    FontSize="24" 
+                    FontAttributes="Bold"
+                    TextColor="White"/>
+                <Label 
+                    Text="Присоединяйся к акциям по всей Беларуси" 
+                    FontSize="13"
+                    TextColor="White"/>
+            </VerticalStackLayout>
+        </Border>
+
+        <!-- ФИЛЬТР ГОРОДОВ (ТОЛЬКО ОДИН ФИЛЬТР) -->
+        <CollectionView 
+            Grid.Row="1"
+            x:Name="CitiesList"
+            HeightRequest="50"
+            Margin="16,0,16,12">
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Horizontal" ItemSpacing="8"/>
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border 
+                        BackgroundColor="{StaticResource SurfaceElevated}"
+                        Stroke="{StaticResource BorderColor}"
+                        StrokeThickness="1"
+                        Padding="12,8"
+                        StrokeShape="RoundRectangle 20">
+                        <Label 
+                            Text="{Binding}" 
+                            TextColor="White"
+                            FontSize="13"
+                            FontAttributes="Bold"
+                            VerticalOptions="Center"/>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnCityTapped" CommandParameter="{Binding .}"/>
+                        </Border.GestureRecognizers>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!-- СПИСОК МЕРОПРИЯТИЙ -->
+        <CollectionView 
+            Grid.Row="2"
+            x:Name="EventsList"
+            Margin="16,0,16,16"
+            SelectionMode="Single"
+            SelectionChanged="OnEventSelected">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border 
+                        Background="{StaticResource CardGradient}"
+                        Stroke="{StaticResource BorderColor}"
+                        StrokeThickness="1"
+                        Padding="0"
+                        Margin="0,8"
+                        StrokeShape="RoundRectangle 20">
+
+                        <Grid RowDefinitions="Auto,Auto,*">
+
+                            <!-- ИЗОБРАЖЕНИЕ -->
+                            <Border 
+                                Grid.Row="0"
+                                StrokeShape="RoundRectangle 20,20,0,0"
+                                HeightRequest="180"
+                                IsVisible="{Binding HasImage}">
+                                <Image 
+                                    Source="{Binding ImageUrl}"
+                                    Aspect="AspectFill"
+                                    BackgroundColor="{StaticResource SurfaceDark}"/>
+                            </Border>
+
+                            <!-- ТЕГИ -->
+                            <HorizontalStackLayout 
+                                Grid.Row="1"
+                                Spacing="8"
+                                Margin="16,12,16,0">
+
+                                <!-- ГОРОД — СКРЫВАЕМ ЕСЛИ ПУСТОЙ -->
+                                <Border 
+                                    IsVisible="{Binding HasCity}"
+                                    BackgroundColor="#10B98130"
+                                    Stroke="{StaticResource AccentGreen}"
+                                    StrokeThickness="1"
+                                    StrokeShape="RoundRectangle 8"
+                                    Padding="8,4">
+                                    <Label 
+                                        Text="{Binding City}" 
+                                        TextColor="{StaticResource AccentGreen}"
+                                        FontAttributes="Bold"
+                                        FontSize="12"/>
+                                </Border>
+
+                                <Border 
+                                    BackgroundColor="#7C3AED30"
+                                    Stroke="{StaticResource PrimaryPurple}"
+                                    StrokeThickness="1"
+                                    StrokeShape="RoundRectangle 8"
+                                    Padding="8,4">
+                                    <Label 
+                                        Text="{Binding EventDate, StringFormat='{0:dd.MM.yyyy}'}" 
+                                        TextColor="{StaticResource PrimaryPurpleLight}"
+                                        FontSize="12"/>
+                                </Border>
+                            </HorizontalStackLayout>
+
+                            <!-- КОНТЕНТ -->
+                            <VerticalStackLayout 
+                                Grid.Row="2"
+                                Spacing="8"
+                                Padding="16,12,16,16">
+
+                                <Label 
+                                    Text="{Binding Title}" 
+                                    FontSize="18" 
+                                    FontAttributes="Bold"
+                                    TextColor="White"/>
+
+                                <Label 
+                                    Text="{Binding Description}" 
+                                    FontSize="14" 
+                                    TextColor="{StaticResource TextSecondary}"
+                                    MaxLines="3"
+                                    LineBreakMode="TailTruncation"/>
+
+                                <Label 
+                                    Text="{Binding Category}" 
+                                    TextColor="{StaticResource PrimaryPurpleLight}"
+                                    FontSize="12"
+                                    FontAttributes="Bold"/>
+
+                                <Label 
+                                    Text="{Binding Address}" 
+                                    TextColor="{StaticResource TextMuted}"
+                                    FontSize="12"/>
+
+                                <!-- КНОПКА МАРШРУТ — СКРЫВАЕМ ЕСЛИ НЕТ КООРДИНАТ -->
+                                <Button 
+                                    IsVisible="{Binding HasCoordinates}"
+                                    Text="🗺️ Маршрут"
+                                    BackgroundColor="{StaticResource AccentBlue}"
+                                    TextColor="White"
+                                    CornerRadius="12"
+                                    HeightRequest="44"
+                                    FontAttributes="Bold"
+                                    Clicked="OnRouteClicked"
+                                    CommandParameter="{Binding .}"/>
+
+                            </VerticalStackLayout>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </Grid>
+
+</ContentPage>

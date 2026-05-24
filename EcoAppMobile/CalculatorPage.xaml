@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage 
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="EcoAppMobile.CalculatorPage"
+    Title="Калькулятор"
+    BackgroundColor="{StaticResource BackgroundDark}">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="20">
+
+            <!-- ШАПКА -->
+            <VerticalStackLayout Spacing="8" HorizontalOptions="Center">
+                <Border 
+                    WidthRequest="80" 
+                    HeightRequest="80"
+                    Background="{StaticResource GreenGradient}"
+                    StrokeShape="RoundRectangle 24">
+                    <Label 
+                        Text="♻️" 
+                        FontSize="40"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center"/>
+                </Border>
+
+                <Label 
+                    Text="Эко-калькулятор" 
+                    FontSize="28" 
+                    FontAttributes="Bold"
+                    TextColor="White"
+                    HorizontalOptions="Center"/>
+
+                <Label 
+                    Text="Посчитай свой вклад в природу" 
+                    FontSize="14"
+                    TextColor="{StaticResource TextSecondary}"
+                    HorizontalOptions="Center"/>
+            </VerticalStackLayout>
+
+            <!-- ПОЛЯ ВВОДА -->
+            <VerticalStackLayout Spacing="12">
+
+                <!-- Алюминий -->
+                <Border Style="{StaticResource CardStyle}" Margin="0">
+                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                        <Border 
+                            Grid.Column="0"
+                            WidthRequest="48"
+                            HeightRequest="48"
+                            BackgroundColor="#F59E0B20"
+                            StrokeShape="RoundRectangle 12">
+                            <Label Text="🥫" FontSize="24" HorizontalOptions="Center" VerticalOptions="Center"/>
+                        </Border>
+                        <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                            <Label Text="Алюминий" TextColor="White" FontAttributes="Bold" FontSize="15"/>
+                            <Label Text="Банки, фольга" TextColor="{StaticResource TextMuted}" FontSize="12"/>
+                        </VerticalStackLayout>
+                        <Border 
+                            Grid.Column="2"
+                            WidthRequest="90"
+                            BackgroundColor="{StaticResource SurfaceElevated}"
+                            StrokeShape="RoundRectangle 12"
+                            Padding="8,0">
+                            <Entry 
+                                x:Name="AluminumEntry"
+                                Placeholder="0 кг"
+                                Keyboard="Numeric"
+                                TextColor="White"
+                                PlaceholderColor="{StaticResource TextMuted}"
+                                BackgroundColor="Transparent"
+                                HorizontalTextAlignment="Center"
+                                VerticalOptions="Center"
+                                FontSize="18"
+                                FontAttributes="Bold"/>
+                        </Border>
+                    </Grid>
+                </Border>
+
+                <!-- Бумага -->
+                <Border Style="{StaticResource CardStyle}" Margin="0">
+                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                        <Border 
+                            Grid.Column="0"
+                            WidthRequest="48"
+                            HeightRequest="48"
+                            BackgroundColor="#3B82F620"
+                            StrokeShape="RoundRectangle 12">
+                            <Label Text="📄" FontSize="24" HorizontalOptions="Center" VerticalOptions="Center"/>
+                        </Border>
+                        <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                            <Label Text="Бумага" TextColor="White" FontAttributes="Bold" FontSize="15"/>
+                            <Label Text="Газеты, картон" TextColor="{StaticResource TextMuted}" FontSize="12"/>
+                        </VerticalStackLayout>
+                        <Border 
+                            Grid.Column="2"
+                            WidthRequest="90"
+                            BackgroundColor="{StaticResource SurfaceElevated}"
+                            StrokeShape="RoundRectangle 12"
+                            Padding="8,0">
+                            <Entry 
+                                x:Name="PaperEntry"
+                                Placeholder="0 кг"
+                                Keyboard="Numeric"
+                                TextColor="White"
+                                PlaceholderColor="{StaticResource TextMuted}"
+                                BackgroundColor="Transparent"
+                                HorizontalTextAlignment="Center"
+                                VerticalOptions="Center"
+                                FontSize="18"
+                                FontAttributes="Bold"/>
+                        </Border>
+                    </Grid>
+                </Border>
+
+                <!-- Пластик -->
+                <Border Style="{StaticResource CardStyle}" Margin="0">
+                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                        <Border 
+                            Grid.Column="0"
+                            WidthRequest="48"
+                            HeightRequest="48"
+                            BackgroundColor="#EC489920"
+                            StrokeShape="RoundRectangle 12">
+                            <Label Text="🥤" FontSize="24" HorizontalOptions="Center" VerticalOptions="Center"/>
+                        </Border>
+                        <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                            <Label Text="Пластик" TextColor="White" FontAttributes="Bold" FontSize="15"/>
+                            <Label Text="Бутылки, контейнеры" TextColor="{StaticResource TextMuted}" FontSize="12"/>
+                        </VerticalStackLayout>
+                        <Border 
+                            Grid.Column="2"
+                            WidthRequest="90"
+                            BackgroundColor="{StaticResource SurfaceElevated}"
+                            StrokeShape="RoundRectangle 12"
+                            Padding="8,0">
+                            <Entry 
+                                x:Name="PlasticEntry"
+                                Placeholder="0 кг"
+                                Keyboard="Numeric"
+                                TextColor="White"
+                                PlaceholderColor="{StaticResource TextMuted}"
+                                BackgroundColor="Transparent"
+                                HorizontalTextAlignment="Center"
+                                VerticalOptions="Center"
+                                FontSize="18"
+                                FontAttributes="Bold"/>
+                        </Border>
+                    </Grid>
+                </Border>
+
+                <!-- Стекло -->
+                <Border Style="{StaticResource CardStyle}" Margin="0">
+                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                        <Border 
+                            Grid.Column="0"
+                            WidthRequest="48"
+                            HeightRequest="48"
+                            BackgroundColor="#10B98120"
+                            StrokeShape="RoundRectangle 12">
+                            <Label Text="🍾" FontSize="24" HorizontalOptions="Center" VerticalOptions="Center"/>
+                        </Border>
+                        <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                            <Label Text="Стекло" TextColor="White" FontAttributes="Bold" FontSize="15"/>
+                            <Label Text="Бутылки, банки" TextColor="{StaticResource TextMuted}" FontSize="12"/>
+                        </VerticalStackLayout>
+                        <Border 
+                            Grid.Column="2"
+                            WidthRequest="90"
+                            BackgroundColor="{StaticResource SurfaceElevated}"
+                            StrokeShape="RoundRectangle 12"
+                            Padding="8,0">
+                            <Entry 
+                                x:Name="GlassEntry"
+                                Placeholder="0 кг"
+                                Keyboard="Numeric"
+                                TextColor="White"
+                                PlaceholderColor="{StaticResource TextMuted}"
+                                BackgroundColor="Transparent"
+                                HorizontalTextAlignment="Center"
+                                VerticalOptions="Center"
+                                FontSize="18"
+                                FontAttributes="Bold"/>
+                        </Border>
+                    </Grid>
+                </Border>
+
+            </VerticalStackLayout>
+
+            <!-- КНОПКА РАСЧЁТА -->
+            <Button 
+                Text="🧮 Рассчитать эко-вклад"
+                Style="{StaticResource PrimaryButton}"
+                Clicked="OnCalculateClicked"/>
+
+            <!-- РЕЗУЛЬТАТЫ -->
+            <Border 
+                x:Name="ResultsBorder"
+                Background="{StaticResource CardGradient}"
+                Stroke="{StaticResource AccentGreen}"
+                StrokeThickness="2"
+                Padding="20"
+                StrokeShape="RoundRectangle 20"
+                IsVisible="False">
+
+                <VerticalStackLayout Spacing="12">
+
+                    <Label 
+                        Text="📊 Ваш результат" 
+                        TextColor="{StaticResource AccentGreen}" 
+                        FontAttributes="Bold" 
+                        FontSize="20"
+                        HorizontalOptions="Center"/>
+
+                    <BoxView HeightRequest="1" Color="{StaticResource BorderColor}"/>
+
+                    <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="10" ColumnSpacing="12">
+
+                        <Label Grid.Row="0" Grid.Column="0" Text="⚡" FontSize="20"/>
+                        <Label Grid.Row="0" Grid.Column="1" x:Name="EnergyLabel" TextColor="White" FontSize="14"/>
+
+                        <Label Grid.Row="1" Grid.Column="0" Text="🌳" FontSize="20"/>
+                        <Label Grid.Row="1" Grid.Column="1" x:Name="TreesLabel" TextColor="White" FontSize="14"/>
+
+                        <Label Grid.Row="2" Grid.Column="0" Text="💧" FontSize="20"/>
+                        <Label Grid.Row="2" Grid.Column="1" x:Name="WaterLabel" TextColor="White" FontSize="14"/>
+
+                        <Label Grid.Row="3" Grid.Column="0" Text="🛢️" FontSize="20"/>
+                        <Label Grid.Row="3" Grid.Column="1" x:Name="OilLabel" TextColor="White" FontSize="14"/>
+
+                        <Label Grid.Row="4" Grid.Column="0" Text="🏗️" FontSize="20"/>
+                        <Label Grid.Row="4" Grid.Column="1" x:Name="RawMaterialLabel" TextColor="White" FontSize="14"/>
+
+                        <Label Grid.Row="5" Grid.Column="0" Text="🌍" FontSize="20"/>
+                        <Label Grid.Row="5" Grid.Column="1" x:Name="CO2Label" TextColor="{StaticResource AccentGreen}" FontAttributes="Bold" FontSize="16"/>
+
+                    </Grid>
+
+                </VerticalStackLayout>
+            </Border>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+    </ContentPage>

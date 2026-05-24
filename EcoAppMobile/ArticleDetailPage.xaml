@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage 
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="EcoAppMobile.ArticleDetailPage"
+    Title="Статья"
+    BackgroundColor="{StaticResource BackgroundDark}">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="0">
+
+            <!-- ШАПКА С КАТЕГОРИЕЙ -->
+            <Border 
+                Background="{StaticResource GreenGradient}"
+                StrokeShape="RoundRectangle 0,0,24,24"
+                Padding="24,20,24,32">
+
+                <VerticalStackLayout Spacing="12">
+                    <Border 
+                        BackgroundColor="White"
+                        StrokeShape="RoundRectangle 8"
+                        Padding="10,6"
+                        HorizontalOptions="Start">
+                        <Label 
+                            x:Name="CategoryLabel"
+                            Text="Категория" 
+                            TextColor="{StaticResource AccentGreen}"
+                            FontAttributes="Bold"
+                            FontSize="12"/>
+                    </Border>
+
+                    <Label 
+                        x:Name="TitleLabel"
+                        Text="Заголовок статьи" 
+                        FontSize="26" 
+                        FontAttributes="Bold"
+                        TextColor="White"
+                        LineBreakMode="WordWrap"/>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- КОНТЕНТ -->
+            <Border 
+                Style="{StaticResource CardStyle}"
+                Margin="16,-16,16,16">
+                <Label 
+                    x:Name="ContentLabel"
+                    Text="Содержание статьи..." 
+                    FontSize="16" 
+                    TextColor="{StaticResource TextSecondary}"
+                    LineBreakMode="WordWrap"/>
+            </Border>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+    </ContentPage>

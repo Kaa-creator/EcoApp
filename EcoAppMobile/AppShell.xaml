@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Shell 
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:EcoAppMobile"
+    x:Class="EcoAppMobile.AppShell"
+    Title="EcoApp"
+    FlyoutBehavior="Flyout"
+    BackgroundColor="{StaticResource BackgroundDark}"
+    FlyoutBackgroundColor="{StaticResource SurfaceDark}">
+
+    <!-- ШАПКА МЕНЮ -->
+    <Shell.FlyoutHeader>
+        <Grid HeightRequest="180">
+            <BoxView>
+                <BoxView.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Offset="0" Color="#4C1D95"/>
+                        <GradientStop Offset="1" Color="#7C3AED"/>
+                    </LinearGradientBrush>
+                </BoxView.Background>
+            </BoxView>
+
+            <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="12">
+                <Border 
+                    WidthRequest="160" 
+                    HeightRequest="160"
+                    StrokeShape="RoundRectangle 80"
+                    BackgroundColor="#7C3AED"
+                    Padding="0">
+                    <Image 
+                        Source="logo.png"
+                        Aspect="AspectFill"
+                        Margin="0"/>
+                </Border>
+            </VerticalStackLayout>
+        </Grid>
+    </Shell.FlyoutHeader>
+
+    <!-- Белый шрифт в пунктах меню -->
+    <Shell.ItemTemplate>
+        <DataTemplate>
+            <Grid ColumnDefinitions="Auto,*" Padding="16,12" ColumnSpacing="12">
+                <Image Grid.Column="0" 
+                       Source="{Binding FlyoutIcon}" 
+                       HeightRequest="24" 
+                       WidthRequest="24"
+                       VerticalOptions="Center"/>
+                <Label Grid.Column="1" 
+                       Text="{Binding Title}" 
+                       TextColor="White"
+                       FontSize="16"
+                       VerticalOptions="Center"/>
+            </Grid>
+        </DataTemplate>
+    </Shell.ItemTemplate>
+
+    <!-- Кнопки справа -->
+    <Shell.TitleView>
+        <HorizontalStackLayout 
+        HorizontalOptions="End" 
+        VerticalOptions="Center"
+        Spacing="8" 
+        Padding="0,0,16,0">
+
+            <!-- Рейтинг -->
+            <Border 
+            WidthRequest="44"
+            HeightRequest="44"
+            BackgroundColor="{StaticResource BackgroundDark}"
+            StrokeShape="RoundRectangle 22"
+            Padding="0">
+                <Label 
+                Text="🏆" 
+                FontSize="22"
+                HorizontalOptions="Center"
+                VerticalOptions="Center">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnRatingTapped"/>
+                    </Label.GestureRecognizers>
+                </Label>
+            </Border>
+
+            <!-- Профиль -->
+            <Border 
+            WidthRequest="44"
+            HeightRequest="44"
+            BackgroundColor="{StaticResource BackgroundDark}"
+            StrokeShape="RoundRectangle 22"
+            Padding="0">
+                <Label 
+                Text="👤" 
+                FontSize="22"
+                HorizontalOptions="Center"
+                VerticalOptions="Center">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnProfileTapped"/>
+                    </Label.GestureRecognizers>
+                </Label>
+            </Border>
+
+        </HorizontalStackLayout>
+        </Shell.TitleView>
+
+        <!-- ПУНКТЫ МЕНЮ -->
+    <FlyoutItem Title="🗺️ Карта" Route="MapPage">
+        <ShellContent ContentTemplate="{DataTemplate local:MapPage}"/>
+    </FlyoutItem>
+
+    <FlyoutItem Title="📋 Задания" Route="TasksPage">
+        <ShellContent ContentTemplate="{DataTemplate local:TasksPage}"/>
+    </FlyoutItem>
+
+    <FlyoutItem Title="🎉 Акции" Route="EventsPage">
+        <ShellContent ContentTemplate="{DataTemplate local:EventsPage}"/>
+    </FlyoutItem>
+
+    <FlyoutItem Title="📰 Статьи" Route="ArticlesPage">
+        <ShellContent ContentTemplate="{DataTemplate local:ArticlesPage}"/>
+    </FlyoutItem>
+
+    <FlyoutItem Title="🧮 Калькулятор" Route="CalculatorPage">
+        <ShellContent ContentTemplate="{DataTemplate local:CalculatorPage}"/>
+    </FlyoutItem>
+
+    <FlyoutItem Title="🛡️ Админ" Route="AdminPage" x:Name="AdminMenuItem">
+        <ShellContent ContentTemplate="{DataTemplate local:AdminPage}"/>
+    </FlyoutItem>
+
+    </Shell>

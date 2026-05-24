@@ -1,0 +1,17 @@
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# Build
+bin/
+obj/
+publish/
+
+# MAUI
+*.apk
+*.aab
+
+# IDE
+.idea/
+*.sln.iml

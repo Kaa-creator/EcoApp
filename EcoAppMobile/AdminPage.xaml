@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage 
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="EcoAppMobile.AdminPage"
+    Title="Админ-панель"
+    BackgroundColor="{StaticResource BackgroundDark}">
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- ТАБЫ -->
+        <ScrollView 
+            Grid.Row="0"
+            Orientation="Horizontal"
+            Margin="12,12,12,0">
+            <HorizontalStackLayout Spacing="8">
+
+                <Button 
+                    x:Name="TabReports" 
+                    Text="📋 Проверка" 
+                    BackgroundColor="{StaticResource PrimaryPurple}"
+                    TextColor="White"
+                    CornerRadius="12"
+                    FontSize="12"
+                    Padding="12,8"
+                    Clicked="OnTabClicked"/>
+
+                <Button 
+                    x:Name="TabPoints" 
+                    Text="📍 Точки" 
+                    BackgroundColor="{StaticResource SurfaceElevated}"
+                    TextColor="{StaticResource TextSecondary}"
+                    CornerRadius="12"
+                    FontSize="12"
+                    Padding="12,8"
+                    Clicked="OnTabClicked"/>
+
+                <Button 
+                    x:Name="TabTasks" 
+                    Text="✅ Задания" 
+                    BackgroundColor="{StaticResource SurfaceElevated}"
+                    TextColor="{StaticResource TextSecondary}"
+                    CornerRadius="12"
+                    FontSize="12"
+                    Padding="12,8"
+                    Clicked="OnTabClicked"/>
+
+                <Button 
+                    x:Name="TabArticles" 
+                    Text="📰 Статьи" 
+                    BackgroundColor="{StaticResource SurfaceElevated}"
+                    TextColor="{StaticResource TextSecondary}"
+                    CornerRadius="12"
+                    FontSize="12"
+                    Padding="12,8"
+                    Clicked="OnTabClicked"/>
+
+                <Button 
+                    x:Name="TabEvents" 
+                    Text="🎉 Акции" 
+                    BackgroundColor="{StaticResource SurfaceElevated}"
+                    TextColor="{StaticResource TextSecondary}"
+                    CornerRadius="12"
+                    FontSize="12"
+                    Padding="12,8"
+                    Clicked="OnTabClicked"/>
+
+            </HorizontalStackLayout>
+        </ScrollView>
+
+        <!-- КОНТЕНТ -->
+        <RefreshView 
+            Grid.Row="1"
+            x:Name="AdminRefreshView"
+            RefreshColor="{StaticResource AccentGreen}"
+            Refreshing="OnRefreshing"
+            Margin="0,12,0,0">
+
+            <ScrollView>
+                <VerticalStackLayout x:Name="ContentLayout" Padding="16"/>
+            </ScrollView>
+
+        </RefreshView>
+
+    </Grid>
+
+    </ContentPage>
