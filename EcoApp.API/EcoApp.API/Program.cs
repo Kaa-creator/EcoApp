@@ -10,8 +10,17 @@ var builder = WebApplication.CreateBuilder(args);
 var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
 builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
 
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+// ✅ Собираем строку подключения из переменных окружения Railway
+var dbHost = Environment.GetEnvironmentVariable("DATABASE_HOST") ?? "localhost";
+var dbPort = Environment.GetEnvironmentVariable("DATABASE_PORT") ?? "5432";
+var dbName = Environment.GetEnvironmentVariable("DATABASE_NAME") ?? "ecoapp";
+var dbUser = Environment.GetEnvironmentVariable("DATABASE_USER") ?? "postgres";
+var dbPass = Environment.GetEnvironmentVariable("DATABASE_PASSWORD") ?? "";
+
+var connectionString = $"Host={dbHost};Port={dbPort};Database={dbName};Username={dbUser};Password={dbPass}";
+
+builder.Services.AddDbContext < AppDbContext > (options =>
+    options.UseNpgsql(connectionString));
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
