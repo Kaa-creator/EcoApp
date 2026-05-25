@@ -17,20 +17,15 @@ namespace EcoApp.API.Services
 
         public async Task SendEmailAsync(string toEmail, string subject, string htmlContent)
         {
-            // ✅ Elastic Email API Key
-            var apiKey = Environment.GetEnvironmentVariable("ELASTIC_EMAIL_API_KEY")
-                ?? _config["ElasticEmail:ApiKey"]
+            // ✅ Resend API Key
+            var apiKey = Environment.GetEnvironmentVariable("RESEND_API_KEY")
+                ?? _config["Resend:ApiKey"]
                 ?? "";
 
-            var fromEmail = Environment.GetEnvironmentVariable("SMTP_FROM_EMAIL")
-                ?? _config["Smtp:FromEmail"]
-                ?? "ecoapp-belarus@mail.ru";
+            // ✅ Resend бесплатный тестовый отправитель
+            var fromEmail = "onboarding@resend.dev";
 
-            var fromName = Environment.GetEnvironmentVariable("SMTP_FROM_NAME")
-                ?? _config["Smtp:FromName"]
-                ?? "EcoApp Belarus";
-
-            Console.WriteLine($"[EMAIL] Sending via Elastic Email to {toEmail}");
+            Console.WriteLine($"[EMAIL] Sending via Resend to {toEmail}");
             Console.WriteLine($"[EMAIL] API Key length: {apiKey.Length}");
 
             if (string.IsNullOrEmpty(apiKey))
@@ -41,19 +36,19 @@ namespace EcoApp.API.Services
 
             try
             {
-                // ✅ Elastic Email REST API v2
-                var url = "https://api.elasticemail.com/v2/email/send";
+                var url = "https://api.resend.com/emails";
 
-                var content = new FormUrlEncodedContent(new[]
+                var json = JsonSerializer.Serialize(new
                 {
-                    new KeyValuePair<string, string>("apikey", apiKey),
-                    new KeyValuePair<string, string>("from", fromEmail),
-                    new KeyValuePair<string, string>("fromName", fromName),
-                    new KeyValuePair<string, string>("to", toEmail),
-                    new KeyValuePair<string, string>("subject", subject),
-                    new KeyValuePair<string, string>("bodyHtml", htmlContent),
-                    new KeyValuePair<string, string>("isTransactional", "true")
+                    from = fromEmail,
+                    to = toEmail,
+                    subject = subject,
+                    html = htmlContent
                 });
+
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                _httpClient.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", apiKey);
 
                 var response = await _httpClient.PostAsync(url, content);
                 var responseBody = await response.Content.ReadAsStringAsync();
@@ -63,7 +58,7 @@ namespace EcoApp.API.Services
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    throw new Exception($"Elastic Email error: {responseBody}");
+                    throw new Exception($"Resend error: {responseBody}");
                 }
 
                 Console.WriteLine($"[EMAIL SUCCESS] Sent to {toEmail}");
