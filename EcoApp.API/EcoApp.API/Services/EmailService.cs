@@ -20,9 +20,10 @@ namespace EcoApp.API.Services
                 ?? _config["Smtp:Host"]
                 ?? "smtp.mail.ru";
 
+            // ✅ Принудительно 465 + SSL для Mail.ru (Railway стабильнее работает)
             var portString = Environment.GetEnvironmentVariable("SMTP_PORT")
                 ?? _config["Smtp:Port"]
-                ?? "587"; // ✅ Меняем на 587
+                ?? "465";
 
             var port = int.Parse(portString);
 
@@ -42,7 +43,7 @@ namespace EcoApp.API.Services
                 ?? _config["Smtp:FromName"]
                 ?? "EcoApp Belarus";
 
-            // ✅ Детальное логирование для диагностики
+            // ✅ Детальное логирование
             Console.WriteLine($"[SMTP CONFIG] Host={host}, Port={port}, User={username}");
             Console.WriteLine($"[SMTP CONFIG] Password length={password.Length}, From={fromEmail}");
 
@@ -64,16 +65,17 @@ namespace EcoApp.API.Services
 
             try
             {
-                // ✅ Для порта 587 используем StartTls, для 465 — SslOnConnect
-                var sslOptions = port == 465
-                    ? SecureSocketOptions.SslOnConnect
-                    : SecureSocketOptions.StartTls;
+                // ✅ Всегда SSL для Mail.ru (порт 465)
+                var sslOptions = SecureSocketOptions.SslOnConnect;
+                
+                // ✅ Таймаут 15 секунд
+                client.Timeout = 15000;
 
-                Console.WriteLine($"[SMTP CONNECT] {host}:{port} with {sslOptions}");
+                Console.WriteLine($"[SMTP CONNECT] {host}:{port} with {sslOptions}, timeout={client.Timeout}ms");
 
                 await client.ConnectAsync(host, port, sslOptions);
 
-                Console.WriteLine("[SMTP CONNECTED] Starting authentication...");
+                Console.WriteLine($"[SMTP CONNECTED] {client.IsConnected}, {client.IsSecure}");
 
                 await client.AuthenticateAsync(username, password);
 
@@ -88,14 +90,13 @@ namespace EcoApp.API.Services
             catch (Exception ex)
             {
                 Console.WriteLine($"[SMTP ERROR] {ex.GetType().Name}: {ex.Message}");
-                Console.WriteLine($"[SMTP ERROR STACK] {ex.StackTrace}");
+                Console.WriteLine($"[SMTP ERROR] Inner: {ex.InnerException?.Message}");
                 throw;
             }
         }
 
         public async Task SendConfirmationEmailAsync(string toEmail, string token)
         {
-            // ✅ Используем переменную окружения Railway для BaseUrl
             var baseUrl = Environment.GetEnvironmentVariable("RAILWAY_PUBLIC_DOMAIN")
                 ?? _config["App:BaseUrl"]
                 ?? "https://ecoapp-production-6393.up.railway.app";
