@@ -15,18 +15,17 @@ namespace EcoApp.API.Services
 
         public async Task SendEmailAsync(string toEmail, string subject, string htmlContent)
         {
-            var host = _config["Smtp:Host"] ?? "smtp.mail.ru";
-            var port = int.Parse(_config["Smtp:Port"] ?? "465");
-            var username = _config["Smtp:Username"] ?? "ecoapp-belarus@mail.ru";
-            var password = _config["Smtp:Password"] ?? "";
-            var fromEmail = _config["Smtp:FromEmail"] ?? "ecoapp-belarus@mail.ru";
-            var fromName = _config["Smtp:FromName"] ?? "EcoApp Belarus";
+            // ✅ Берём настройки из переменных окружения Railway
+            var host = Environment.GetEnvironmentVariable("SMTP_HOST") ?? _config["Smtp:Host"] ?? "smtp.mail.ru";
+            var port = int.Parse(Environment.GetEnvironmentVariable("SMTP_PORT") ?? _config["Smtp:Port"] ?? "465");
+            var username = Environment.GetEnvironmentVariable("SMTP_USERNAME") ?? _config["Smtp:Username"] ?? "ecoapp-belarus@mail.ru";
+            var password = Environment.GetEnvironmentVariable("SMTP_PASSWORD") ?? _config["Smtp:Password"] ?? "";
+            var fromEmail = Environment.GetEnvironmentVariable("SMTP_FROM_EMAIL") ?? _config["Smtp:FromEmail"] ?? "ecoapp-belarus@mail.ru";
+            var fromName = Environment.GetEnvironmentVariable("SMTP_FROM_NAME") ?? _config["Smtp:FromName"] ?? "EcoApp Belarus";
 
-            // Если SMTP не настроен — логируем
             if (string.IsNullOrEmpty(password))
             {
                 Console.WriteLine($"[EMAIL STUB] To: {toEmail}");
-                Console.WriteLine($"[EMAIL STUB] Subject: {subject}");
                 return;
             }
 
@@ -35,13 +34,9 @@ namespace EcoApp.API.Services
             message.To.Add(new MailboxAddress("", toEmail));
             message.Subject = subject;
 
-            var bodyBuilder = new BodyBuilder
-            {
-                HtmlBody = htmlContent
-            };
+            var bodyBuilder = new BodyBuilder { HtmlBody = htmlContent };
             message.Body = bodyBuilder.ToMessageBody();
 
-            // ✅ ИСПРАВЛЕНО: Явно указываем MailKit.Net.Smtp.SmtpClient
             using var client = new MailKit.Net.Smtp.SmtpClient();
 
             try
