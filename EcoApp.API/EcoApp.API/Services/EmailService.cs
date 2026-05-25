@@ -1,4 +1,4 @@
-﻿using MailKit.Net.Smtp;        // ✅ Явно указываем MailKit
+﻿using MailKit.Net.Smtp;
 using MailKit.Security;
 using MimeKit;
 
@@ -15,17 +15,40 @@ namespace EcoApp.API.Services
 
         public async Task SendEmailAsync(string toEmail, string subject, string htmlContent)
         {
-            // ✅ Берём настройки из переменных окружения Railway
-            var host = Environment.GetEnvironmentVariable("SMTP_HOST") ?? _config["Smtp:Host"] ?? "smtp.mail.ru";
-            var port = int.Parse(Environment.GetEnvironmentVariable("SMTP_PORT") ?? _config["Smtp:Port"] ?? "465");
-            var username = Environment.GetEnvironmentVariable("SMTP_USERNAME") ?? _config["Smtp:Username"] ?? "ecoapp-belarus@mail.ru";
-            var password = Environment.GetEnvironmentVariable("SMTP_PASSWORD") ?? _config["Smtp:Password"] ?? "";
-            var fromEmail = Environment.GetEnvironmentVariable("SMTP_FROM_EMAIL") ?? _config["Smtp:FromEmail"] ?? "ecoapp-belarus@mail.ru";
-            var fromName = Environment.GetEnvironmentVariable("SMTP_FROM_NAME") ?? _config["Smtp:FromName"] ?? "EcoApp Belarus";
+            // ✅ Сначала пробуем переменные окружения Railway, потом appsettings
+            var host = Environment.GetEnvironmentVariable("SMTP_HOST")
+                ?? _config["Smtp:Host"]
+                ?? "smtp.mail.ru";
+
+            var portString = Environment.GetEnvironmentVariable("SMTP_PORT")
+                ?? _config["Smtp:Port"]
+                ?? "587"; // ✅ Меняем на 587
+
+            var port = int.Parse(portString);
+
+            var username = Environment.GetEnvironmentVariable("SMTP_USERNAME")
+                ?? _config["Smtp:Username"]
+                ?? "ecoapp-belarus@mail.ru";
+
+            var password = Environment.GetEnvironmentVariable("SMTP_PASSWORD")
+                ?? _config["Smtp:Password"]
+                ?? "";
+
+            var fromEmail = Environment.GetEnvironmentVariable("SMTP_FROM_EMAIL")
+                ?? _config["Smtp:FromEmail"]
+                ?? "ecoapp-belarus@mail.ru";
+
+            var fromName = Environment.GetEnvironmentVariable("SMTP_FROM_NAME")
+                ?? _config["Smtp:FromName"]
+                ?? "EcoApp Belarus";
+
+            // ✅ Детальное логирование для диагностики
+            Console.WriteLine($"[SMTP CONFIG] Host={host}, Port={port}, User={username}");
+            Console.WriteLine($"[SMTP CONFIG] Password length={password.Length}, From={fromEmail}");
 
             if (string.IsNullOrEmpty(password))
             {
-                Console.WriteLine($"[EMAIL STUB] To: {toEmail}");
+                Console.WriteLine($"[EMAIL STUB] Password is empty! To: {toEmail}");
                 return;
             }
 
@@ -41,23 +64,42 @@ namespace EcoApp.API.Services
 
             try
             {
-                await client.ConnectAsync(host, port, SecureSocketOptions.SslOnConnect);
-                await client.AuthenticateAsync(username, password);
-                await client.SendAsync(message);
-                await client.DisconnectAsync(true);
+                // ✅ Для порта 587 используем StartTls, для 465 — SslOnConnect
+                var sslOptions = port == 465
+                    ? SecureSocketOptions.SslOnConnect
+                    : SecureSocketOptions.StartTls;
 
-                Console.WriteLine($"[SMTP] Email sent to {toEmail}: {subject}");
+                Console.WriteLine($"[SMTP CONNECT] {host}:{port} with {sslOptions}");
+
+                await client.ConnectAsync(host, port, sslOptions);
+
+                Console.WriteLine("[SMTP CONNECTED] Starting authentication...");
+
+                await client.AuthenticateAsync(username, password);
+
+                Console.WriteLine("[SMTP AUTHENTICATED] Sending email...");
+
+                await client.SendAsync(message);
+
+                Console.WriteLine($"[SMTP SUCCESS] Email sent to {toEmail}: {subject}");
+
+                await client.DisconnectAsync(true);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[SMTP ERROR] {ex.Message}");
+                Console.WriteLine($"[SMTP ERROR] {ex.GetType().Name}: {ex.Message}");
+                Console.WriteLine($"[SMTP ERROR STACK] {ex.StackTrace}");
                 throw;
             }
         }
 
         public async Task SendConfirmationEmailAsync(string toEmail, string token)
         {
-            var baseUrl = _config["App:BaseUrl"] ?? "http://localhost:5287";
+            // ✅ Используем переменную окружения Railway для BaseUrl
+            var baseUrl = Environment.GetEnvironmentVariable("RAILWAY_PUBLIC_DOMAIN")
+                ?? _config["App:BaseUrl"]
+                ?? "https://ecoapp-production-6393.up.railway.app";
+
             var confirmationLink = $"{baseUrl}/api/auth/confirm-email?token={token}";
 
             var html = $@"
