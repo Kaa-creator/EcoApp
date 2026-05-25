@@ -45,7 +45,7 @@ builder.Services.AddAuthorization(options =>
 });
 
 builder.Services.AddScoped<EmailService>();
-builder.Services.AddScoped<TelegramService>();
+builder.Services.AddSingleton<TelegramService>(); // ✅ Singleton, чтобы не уничтожался
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

@@ -9,14 +9,14 @@ namespace EcoApp.API.Services
     public class TelegramService
     {
         private readonly IConfiguration _config;
-        private readonly AppDbContext _context;
+        private readonly IServiceProvider _serviceProvider; // ✅ Вместо прямого DbContext
         private TelegramBotClient? _botClient;
         private CancellationTokenSource? _cts;
 
-        public TelegramService(IConfiguration config, AppDbContext context)
+        public TelegramService(IConfiguration config, IServiceProvider serviceProvider)
         {
             _config = config;
-            _context = context;
+            _serviceProvider = serviceProvider;
 
             var token = _config["Telegram:BotToken"];
             if (!string.IsNullOrEmpty(token))
@@ -36,7 +36,7 @@ namespace EcoApp.API.Services
                 errorHandler: HandleErrorAsync,
                 receiverOptions: new Telegram.Bot.Polling.ReceiverOptions
                 {
-                    AllowedUpdates = Array.Empty<UpdateType>()
+                    AllowedUpdates = Array.Empty << UpdateType > ()
                 },
                 cancellationToken: _cts.Token
             );
@@ -82,7 +82,11 @@ namespace EcoApp.API.Services
                 int.TryParse(parts[1].Replace("USERID_", ""), out userId);
             }
 
-            var existingByChatId = _context.TelegramSubscriptions
+            // ✅ Создаём новый scope для DbContext
+            using var scope = _serviceProvider.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService << AppDbContext > ();
+
+            var existingByChatId = context.TelegramSubscriptions
                 .FirstOrDefault(t => t.ChatId == chatId);
 
             if (existingByChatId != null)
@@ -90,7 +94,7 @@ namespace EcoApp.API.Services
                 if (userId > 0 && existingByChatId.UserId != userId)
                 {
                     existingByChatId.UserId = userId;
-                    _context.SaveChanges();
+                    context.SaveChanges();
 
                     await botClient.SendMessage(
                         chatId: chatId,
@@ -110,13 +114,13 @@ namespace EcoApp.API.Services
 
             if (userId > 0)
             {
-                var existingByUserId = _context.TelegramSubscriptions
+                var existingByUserId = context.TelegramSubscriptions
                     .FirstOrDefault(t => t.UserId == userId);
 
                 if (existingByUserId != null)
                 {
                     existingByUserId.ChatId = chatId;
-                    _context.SaveChanges();
+                    context.SaveChanges();
 
                     await botClient.SendMessage(
                         chatId: chatId,
@@ -126,12 +130,12 @@ namespace EcoApp.API.Services
                     return;
                 }
 
-                _context.TelegramSubscriptions.Add(new TelegramSubscription
+                context.TelegramSubscriptions.Add(new TelegramSubscription
                 {
                     UserId = userId,
                     ChatId = chatId
                 });
-                _context.SaveChanges();
+                context.SaveChanges();
 
                 await botClient.SendMessage(
                     chatId: chatId,
@@ -152,13 +156,16 @@ namespace EcoApp.API.Services
 
         private async Task HandleStopCommand(ITelegramBotClient botClient, long chatId, CancellationToken cancellationToken)
         {
-            var subscription = _context.TelegramSubscriptions
+            using var scope = _serviceProvider.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService << AppDbContext > ();
+
+            var subscription = context.TelegramSubscriptions
                 .FirstOrDefault(t => t.ChatId == chatId);
 
             if (subscription != null)
             {
-                _context.TelegramSubscriptions.Remove(subscription);
-                _context.SaveChanges();
+                context.TelegramSubscriptions.Remove(subscription);
+                context.SaveChanges();
 
                 await botClient.SendMessage(
                     chatId: chatId,
@@ -214,7 +221,10 @@ namespace EcoApp.API.Services
                 return;
             }
 
-            var subscription = _context.TelegramSubscriptions
+            using var scope = _serviceProvider.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService << AppDbContext > ();
+
+            var subscription = context.TelegramSubscriptions
                 .FirstOrDefault(t => t.UserId == userId);
 
             if (subscription == null)
@@ -238,7 +248,10 @@ namespace EcoApp.API.Services
 
         public async Task BroadcastToSubscribersAsync(string category, string message)
         {
-            var subscribers = _context.TelegramSubscriptions
+            using var scope = _serviceProvider.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService << AppDbContext > ();
+
+            var subscribers = context.TelegramSubscriptions
                 .Where(s =>
                     (category == "events" && s.NotifyEvents) ||
                     (category == "articles" && s.NotifyArticles) ||
