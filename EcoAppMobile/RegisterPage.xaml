@@ -17,7 +17,7 @@
         </BoxView>
 
         <ScrollView>
-            <VerticalStackLayout Padding="32,40" Spacing="20">
+            <VerticalStackLayout Padding="28,32" Spacing="16">
 
                 <Label 
                     Text="Создание аккаунта" 
@@ -26,12 +26,12 @@
                     TextColor="White"
                     HorizontalOptions="Center"/>
 
-                <Border Style="{StaticResource CardStyle}" Padding="24">
-                    <VerticalStackLayout Spacing="18">
+                <Border Style="{StaticResource CardStyle}" Padding="20">
+                    <VerticalStackLayout Spacing="14">
 
-                        <Border Style="{StaticResource InputContainerStyle}" HeightRequest="60">
-                            <Grid ColumnDefinitions="Auto,*" Padding="16,0">
-                                <Label Text="👤" FontSize="22" VerticalOptions="Center"/>
+                        <Border Style="{StaticResource InputContainerStyle}" MinimumHeightRequest="52">
+                            <Grid ColumnDefinitions="Auto,*" Padding="12,0">
+                                <Label Text="👤" FontSize="20" VerticalOptions="Center"/>
                                 <Entry Grid.Column="1" x:Name="NameEntry" Placeholder="Имя" 
                                        TextColor="{StaticResource TextPrimary}"
                                        PlaceholderColor="{StaticResource TextMuted}"
@@ -41,9 +41,9 @@
                             </Grid>
                         </Border>
 
-                        <Border Style="{StaticResource InputContainerStyle}" HeightRequest="60">
-                            <Grid ColumnDefinitions="Auto,*" Padding="16,0">
-                                <Label Text="✉️" FontSize="22" VerticalOptions="Center"/>
+                        <Border Style="{StaticResource InputContainerStyle}" MinimumHeightRequest="52">
+                            <Grid ColumnDefinitions="Auto,*" Padding="12,0">
+                                <Label Text="✉️" FontSize="20" VerticalOptions="Center"/>
                                 <Entry Grid.Column="1" x:Name="EmailEntry" Placeholder="Email" Keyboard="Email"
                                        TextColor="{StaticResource TextPrimary}"
                                        PlaceholderColor="{StaticResource TextMuted}"
@@ -53,9 +53,9 @@
                             </Grid>
                         </Border>
 
-                        <Border Style="{StaticResource InputContainerStyle}" HeightRequest="60">
-                            <Grid ColumnDefinitions="Auto,*" Padding="16,0">
-                                <Label Text="📱" FontSize="22" VerticalOptions="Center"/>
+                        <Border Style="{StaticResource InputContainerStyle}" MinimumHeightRequest="52">
+                            <Grid ColumnDefinitions="Auto,*" Padding="12,0">
+                                <Label Text="📱" FontSize="20" VerticalOptions="Center"/>
                                 <Entry Grid.Column="1" x:Name="PhoneEntry" Placeholder="Телефон (+375...)"
                                        TextColor="{StaticResource TextPrimary}"
                                        PlaceholderColor="{StaticResource TextMuted}"
@@ -67,9 +67,9 @@
                         </Border>
 
                         <!-- Пароль с глазиком -->
-                        <Border Style="{StaticResource InputContainerStyle}" HeightRequest="60">
-                            <Grid ColumnDefinitions="Auto,*,Auto" Padding="16,0">
-                                <Label Text="🔒" FontSize="22" VerticalOptions="Center"/>
+                        <Border Style="{StaticResource InputContainerStyle}" MinimumHeightRequest="52">
+                            <Grid ColumnDefinitions="Auto,*,Auto" Padding="12,0">
+                                <Label Text="🔒" FontSize="20" VerticalOptions="Center"/>
                                 <Entry Grid.Column="1" x:Name="PasswordEntry" Placeholder="Пароль" IsPassword="True"
                                        TextColor="{StaticResource TextPrimary}"
                                        PlaceholderColor="{StaticResource TextMuted}"
@@ -80,7 +80,7 @@
                                     Grid.Column="2"
                                     x:Name="RegEyeIcon"
                                     Text="👁️" 
-                                    FontSize="22"
+                                    FontSize="20"
                                     VerticalOptions="Center"
                                     TextColor="{StaticResource TextMuted}">
                                     <Label.GestureRecognizers>
@@ -91,9 +91,9 @@
                         </Border>
 
                         <!-- Подтверждение пароля -->
-                        <Border Style="{StaticResource InputContainerStyle}" HeightRequest="60">
-                            <Grid ColumnDefinitions="Auto,*" Padding="16,0">
-                                <Label Text="🔐" FontSize="22" VerticalOptions="Center"/>
+                        <Border Style="{StaticResource InputContainerStyle}" MinimumHeightRequest="52">
+                            <Grid ColumnDefinitions="Auto,*" Padding="12,0">
+                                <Label Text="🔐" FontSize="20" VerticalOptions="Center"/>
                                 <Entry Grid.Column="1" x:Name="ConfirmPasswordEntry" Placeholder="Подтвердите пароль" IsPassword="True"
                                        TextColor="{StaticResource TextPrimary}"
                                        PlaceholderColor="{StaticResource TextMuted}"

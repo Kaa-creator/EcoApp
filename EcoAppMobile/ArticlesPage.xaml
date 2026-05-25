@@ -7,156 +7,154 @@
     Title="Статьи"
     BackgroundColor="{StaticResource BackgroundDark}">
 
-    <Grid RowDefinitions="Auto,Auto,Auto,*">
+    <ScrollView>
+        <VerticalStackLayout Spacing="12" Padding="0,0,0,16">
 
-        <!-- ШАПКА -->
-        <Border 
-            Grid.Row="0"
-            Background="{StaticResource GreenGradient}"
-            StrokeShape="RoundRectangle 0,0,24,24"
-            Padding="20"
-            Margin="0,0,0,12">
+            <!-- ШАПКА -->
+            <Border 
+                Background="{StaticResource GreenGradient}"
+                StrokeShape="RoundRectangle 0,0,24,24"
+                Padding="20"
+                Margin="0,0,0,12">
 
-            <VerticalStackLayout Spacing="4">
-                <Label 
-                    Text="📰 Эко-статьи" 
-                    FontSize="24" 
-                    FontAttributes="Bold"
-                    TextColor="White"/>
-                <Label 
-                    Text="Узнавай больше об экологии" 
-                    FontSize="13"
-                    TextColor="White"/>
-            </VerticalStackLayout>
-        </Border>
-
-        <!-- SDGs БАННЕР -->
-        <Border 
-            Grid.Row="1"
-            BackgroundColor="{StaticResource SurfaceElevated}"
-            Stroke="{StaticResource AccentGreen}"
-            StrokeThickness="1"
-            Padding="16"
-            Margin="16,0,16,12"
-            StrokeShape="RoundRectangle 16">
-            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
-                <Border 
-                    Grid.Column="0"
-                    WidthRequest="56"
-                    HeightRequest="56"
-                    BackgroundColor="#10B98130"
-                    StrokeShape="RoundRectangle 16">
+                <VerticalStackLayout Spacing="4">
                     <Label 
-                        Text="🌍" 
-                        FontSize="32"
-                        HorizontalOptions="Center"
-                        VerticalOptions="Center"/>
-                </Border>
-                <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
-                    <Label 
-                        Text="17 целей устойчивого развития" 
-                        TextColor="White"
+                        Text="📰 Эко-статьи" 
+                        FontSize="24" 
                         FontAttributes="Bold"
-                        FontSize="15"/>
+                        TextColor="White"/>
                     <Label 
-                        Text="sdgs.by — узнай больше" 
-                        TextColor="{StaticResource AccentGreen}"
-                        FontSize="12"/>
+                        Text="Узнавай больше об экологии" 
+                        FontSize="13"
+                        TextColor="White"/>
                 </VerticalStackLayout>
-            </Grid>
-            <Border.GestureRecognizers>
-                <TapGestureRecognizer Tapped="OnSdgsTapped"/>
-            </Border.GestureRecognizers>
-        </Border>
+            </Border>
 
-        <!-- ФИЛЬТР КАТЕГОРИЙ -->
-        <CollectionView 
-            Grid.Row="2"
-            x:Name="CategoriesList"
-            HeightRequest="45"
-            Margin="16,0,16,12">
-            <CollectionView.ItemsLayout>
-                <LinearItemsLayout Orientation="Horizontal" ItemSpacing="8"/>
-            </CollectionView.ItemsLayout>
-            <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="local:CategoryFilter">
+            <!-- SDGs БАННЕР -->
+            <Border 
+                BackgroundColor="{StaticResource SurfaceElevated}"
+                Stroke="{StaticResource AccentGreen}"
+                StrokeThickness="1"
+                Padding="16"
+                Margin="16,0,16,12"
+                StrokeShape="RoundRectangle 16">
+                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
                     <Border 
-                        BackgroundColor="{Binding BackgroundColor}"
-                        Stroke="{Binding BorderColor}"
-                        StrokeThickness="1"
-                        Padding="12,8"
-                        StrokeShape="RoundRectangle 20">
+                        Grid.Column="0"
+                        WidthRequest="56"
+                        HeightRequest="56"
+                        BackgroundColor="#10B98130"
+                        StrokeShape="RoundRectangle 16">
                         <Label 
-                            Text="{Binding Name}" 
-                            TextColor="{Binding TextColor}"
-                            FontSize="12"
+                            Text="🌍" 
+                            FontSize="32"
+                            HorizontalOptions="Center"
                             VerticalOptions="Center"/>
-                        <Border.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="OnCategoryTapped" CommandParameter="{Binding .}"/>
-                        </Border.GestureRecognizers>
                     </Border>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+                    <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                        <Label 
+                            Text="17 целей устойчивого развития" 
+                            TextColor="White"
+                            FontAttributes="Bold"
+                            FontSize="15"/>
+                        <Label 
+                            Text="sdgs.by — узнай больше" 
+                            TextColor="{StaticResource AccentGreen}"
+                            FontSize="12"/>
+                    </VerticalStackLayout>
+                </Grid>
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnSdgsTapped"/>
+                </Border.GestureRecognizers>
+            </Border>
 
-        <!-- СПИСОК СТАТЕЙ -->
-        <CollectionView 
-            Grid.Row="3"
-            x:Name="ArticlesList"
-            Margin="16,0,16,16"
-            SelectionMode="Single"
-            SelectionChanged="OnArticleSelected">
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <Border 
-                        Background="{StaticResource CardGradient}"
-                        Stroke="{StaticResource BorderColor}"
-                        StrokeThickness="1"
-                        Padding="20"
-                        Margin="0,8"
-                        StrokeShape="RoundRectangle 20">
-
-                        <VerticalStackLayout Spacing="12">
-
-                            <Border 
-                                BackgroundColor="{StaticResource AccentGreen}"
-                                StrokeShape="RoundRectangle 8"
-                                Padding="8,4"
-                                HorizontalOptions="Start">
-                                <Label 
-                                    Text="{Binding Category}" 
-                                    TextColor="White"
-                                    FontAttributes="Bold"
-                                    FontSize="12"/>
-                            </Border>
-
+            <!-- ФИЛЬТР КАТЕГОРИЙ -->
+            <CollectionView 
+                x:Name="CategoriesList"
+                HeightRequest="45"
+                Margin="16,0,16,12">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Horizontal" ItemSpacing="8"/>
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="local:CategoryFilter">
+                        <Border 
+                            BackgroundColor="{Binding BackgroundColor}"
+                            Stroke="{Binding BorderColor}"
+                            StrokeThickness="1"
+                            Padding="12,8"
+                            StrokeShape="RoundRectangle 20">
                             <Label 
-                                Text="{Binding Title}" 
-                                FontSize="20" 
-                                FontAttributes="Bold"
-                                TextColor="White"/>
+                                Text="{Binding Name}" 
+                                TextColor="{Binding TextColor}"
+                                FontSize="12"
+                                VerticalOptions="Center"/>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnCategoryTapped" CommandParameter="{Binding .}"/>
+                            </Border.GestureRecognizers>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
 
-                            <Label 
-                                Text="{Binding Preview}" 
-                                FontSize="14" 
-                                TextColor="{StaticResource TextSecondary}"
-                                LineBreakMode="TailTruncation"
-                                MaxLines="3"/>
+            <!-- СПИСОК СТАТЕЙ -->
+            <CollectionView 
+                x:Name="ArticlesList"
+                Margin="16,0,16,16"
+                SelectionMode="Single"
+                SelectionChanged="OnArticleSelected">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Border 
+                            Background="{StaticResource CardGradient}"
+                            Stroke="{StaticResource BorderColor}"
+                            StrokeThickness="1"
+                            Padding="20"
+                            Margin="0,8"
+                            StrokeShape="RoundRectangle 20">
 
-                            <HorizontalStackLayout Spacing="4" HorizontalOptions="End">
+                            <VerticalStackLayout Spacing="12">
+
+                                <Border 
+                                    BackgroundColor="{StaticResource AccentGreen}"
+                                    StrokeShape="RoundRectangle 8"
+                                    Padding="8,4"
+                                    HorizontalOptions="Start">
+                                    <Label 
+                                        Text="{Binding Category}" 
+                                        TextColor="White"
+                                        FontAttributes="Bold"
+                                        FontSize="12"/>
+                                </Border>
+
                                 <Label 
-                                    Text="Читать →" 
-                                    TextColor="{StaticResource AccentGreen}"
+                                    Text="{Binding Title}" 
+                                    FontSize="20" 
                                     FontAttributes="Bold"
-                                    FontSize="14"/>
-                            </HorizontalStackLayout>
+                                    TextColor="White"/>
 
-                        </VerticalStackLayout>
-                    </Border>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+                                <Label 
+                                    Text="{Binding Preview}" 
+                                    FontSize="14" 
+                                    TextColor="{StaticResource TextSecondary}"
+                                    LineBreakMode="TailTruncation"
+                                    MaxLines="3"/>
 
-    </Grid>
+                                <HorizontalStackLayout Spacing="4" HorizontalOptions="End">
+                                    <Label 
+                                        Text="Читать →" 
+                                        TextColor="{StaticResource AccentGreen}"
+                                        FontAttributes="Bold"
+                                        FontSize="14"/>
+                                </HorizontalStackLayout>
 
-    </ContentPage>
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

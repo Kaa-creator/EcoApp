@@ -18,13 +18,13 @@
         </BoxView>
 
         <ScrollView>
-            <VerticalStackLayout Padding="40,40" Spacing="24" VerticalOptions="Center">
+            <VerticalStackLayout Padding="32,24" Spacing="20" VerticalOptions="Center">
 
                 <!-- ЛОГО -->
                 <Border 
-                    WidthRequest="200" 
-                    HeightRequest="200"
-                    StrokeShape="RoundRectangle 100"
+                    WidthRequest="160" 
+                    HeightRequest="160"
+                    StrokeShape="RoundRectangle 80"
                     BackgroundColor="#1E1B4B"
                     Padding="0"
                     HorizontalOptions="Center">
@@ -47,9 +47,9 @@
                 <!-- Форма входа -->
                 <Border 
                     Style="{StaticResource CardStyle}"
-                    Margin="0,20,0,0"
-                    Padding="24">
-                    <VerticalStackLayout Spacing="20">
+                    Margin="0,16,0,0"
+                    Padding="20">
+                    <VerticalStackLayout Spacing="16">
 
                         <Label 
                             Text="Вход в аккаунт" 
@@ -62,12 +62,12 @@
                         <!-- Email -->
                         <Border 
                             Style="{StaticResource InputContainerStyle}"
-                            HeightRequest="60">
-                            <Grid ColumnDefinitions="Auto,*" Padding="16,0">
+                            MinimumHeightRequest="52">
+                            <Grid ColumnDefinitions="Auto,*" Padding="12,0">
                                 <Label 
                                     Grid.Column="0"
                                     Text="✉️" 
-                                    FontSize="22"
+                                    FontSize="20"
                                     VerticalOptions="Center"/>
                                 <Entry 
                                     Grid.Column="1"
@@ -85,12 +85,12 @@
                         <!-- Пароль с глазиком -->
                         <Border 
                             Style="{StaticResource InputContainerStyle}"
-                            HeightRequest="60">
-                            <Grid ColumnDefinitions="Auto,*,Auto" Padding="16,0">
+                            MinimumHeightRequest="52">
+                            <Grid ColumnDefinitions="Auto,*,Auto" Padding="12,0">
                                 <Label 
                                     Grid.Column="0"
                                     Text="🔒" 
-                                    FontSize="22"
+                                    FontSize="20"
                                     VerticalOptions="Center"/>
                                 <Entry 
                                     Grid.Column="1"
@@ -106,7 +106,7 @@
                                     Grid.Column="2"
                                     x:Name="EyeIcon"
                                     Text="👁️" 
-                                    FontSize="22"
+                                    FontSize="20"
                                     VerticalOptions="Center"
                                     TextColor="{StaticResource TextMuted}">
                                     <Label.GestureRecognizers>
@@ -136,7 +136,7 @@
                     TextColor="{StaticResource TextMuted}"
                     FontSize="12"
                     HorizontalOptions="Center"
-                    Margin="0,20"/>
+                    Margin="0,16"/>
 
             </VerticalStackLayout>
         </ScrollView>

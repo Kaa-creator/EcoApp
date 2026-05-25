@@ -141,6 +141,7 @@ public partial class ProfilePage : ContentPage
                 }
                 else
                 {
+                    // ✅ Используем FontImageSource вместо эмодзи
                     AvatarImage.Source = new FontImageSource
                     {
                         Glyph = "🌿",
@@ -169,6 +170,14 @@ public partial class ProfilePage : ContentPage
 
         try
         {
+            // ✅ Запрашиваем разрешение на чтение хранилища
+            var status = await Permissions.RequestAsync<Permissions.StorageRead>();
+            if (status != PermissionStatus.Granted)
+            {
+                await DisplayAlert("Нет доступа", "Разрешите доступ к галерее в настройках телефона", "OK");
+                return;
+            }
+
             var photo = await MediaPicker.PickPhotoAsync(new MediaPickerOptions
             {
                 Title = "Выберите новое фото профиля"
@@ -176,7 +185,8 @@ public partial class ProfilePage : ContentPage
 
             if (photo == null) return;
 
-            var localPath = Path.Combine(FileSystem.CacheDirectory, $"avatar_{_userId}.jpg");
+            // ✅ Копируем в локальную папку приложения (доступную для записи)
+            var localPath = Path.Combine(FileSystem.AppDataDirectory, $"avatar_{_userId}.jpg");
 
             using (var sourceStream = await photo.OpenReadAsync())
             using (var fileStream = new FileStream(localPath, FileMode.Create, FileAccess.Write))
@@ -277,6 +287,20 @@ public partial class ProfilePage : ContentPage
         {
             var botUsername = "ecoapp_belarus_bot";
             var telegramUrl = $"https://t.me/{botUsername}?start=USERID_{_userId}";
+
+            // ✅ Проверяем, подписан ли уже
+            var response = await _httpClient.GetAsync($"{ApiConfig.BaseUrl}/api/Users/{_userId}/telegram-status");
+            if (response.IsSuccessStatusCode)
+            {
+                var json = await response.Content.ReadAsStringAsync();
+                var status = JsonSerializer.Deserialize<TelegramStatusResponse>(json);
+
+                if (status?.IsSubscribed == true)
+                {
+                    await DisplayAlert("Информация", "Вы уже подписаны на уведомления", "OK");
+                    return;
+                }
+            }
 
             var canOpen = await Launcher.CanOpenAsync(telegramUrl);
             if (canOpen)

@@ -84,7 +84,7 @@ public partial class RegisterPage : ContentPage
 
             if (response.IsSuccessStatusCode)
             {
-                // ✅ Подтверждение email отключено — сразу сохраняем данные и входим
+                // ✅ Убрали сообщение о письме — сразу входим
                 await SecureStorage.SetAsync("tempEmail", email);
                 await SecureStorage.SetAsync("tempPassword", password);
 

@@ -15,7 +15,7 @@
             StrokeShape="RoundRectangle 0,0,24,24"
             Padding="20"
             Margin="0,0,0,16"
-            HeightRequest="100">
+            HeightRequest="80">
 
             <Grid ColumnDefinitions="Auto,*,Auto">
                 <Label 
@@ -32,7 +32,7 @@
                     <Label 
                         x:Name="UserPointsLabel"
                         Text="0" 
-                        FontSize="28"
+                        FontSize="24"
                         FontAttributes="Bold"
                         TextColor="White"/>
                 </VerticalStackLayout>
