@@ -25,7 +25,7 @@ namespace EcoApp.API.Controllers
             _emailService = emailService;
         }
 
-        // 📝 РЕГИСТРАЦИЯ с подтверждением email
+        // 📝 РЕГИСТРАЦИЯ — без подтверждения email
         [HttpPost("register")]
         public async Task<IActionResult> Register(User user)
         {
@@ -37,45 +37,20 @@ namespace EcoApp.API.Controllers
             user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(user.PasswordHash);
             user.Role = "User";
             user.Points = 0;
-            user.IsEmailConfirmed = false;
+            user.IsEmailConfirmed = true; // ✅ Сразу подтверждаем email
 
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            // Создаем токен подтверждения email
-            var confirmation = new EmailConfirmation
-            {
-                UserId = user.Id
-            };
-            _context.EmailConfirmations.Add(confirmation);
-            await _context.SaveChangesAsync();
-
-            // Отправляем письмо с подтверждением
-            await _emailService.SendConfirmationEmailAsync(user.Email, confirmation.Token);
-
-            return Ok(new { message = "Регистрация успешна! Проверьте email для подтверждения." });
+            // ✅ Email подтверждение отключено — сразу возвращаем успех
+            return Ok(new { message = "Регистрация успешна! Теперь можете войти." });
         }
 
-        // ✅ ПОДТВЕРЖДЕНИЕ EMAIL
+        // ✅ ПОДТВЕРЖДЕНИЕ EMAIL — оставляем для обратной совместимости (не используется)
         [HttpGet("confirm-email")]
         public async Task<IActionResult> ConfirmEmail(string token)
         {
-            var confirmation = await _context.EmailConfirmations
-                .FirstOrDefaultAsync(c => c.Token == token && !c.IsUsed && c.ExpiresAt > DateTime.UtcNow);
-
-            if (confirmation == null)
-                return BadRequest("Недействительный или просроченный токен");
-
-            var user = await _context.Users.FindAsync(confirmation.UserId);
-            if (user == null)
-                return NotFound("Пользователь не найден");
-
-            user.IsEmailConfirmed = true;
-            confirmation.IsUsed = true;
-
-            await _context.SaveChangesAsync();
-
-            return Ok(new { message = "Email успешно подтверждён! Теперь можно войти." });
+            return Ok(new { message = "Email подтверждение отключено. Войдите напрямую." });
         }
 
         // 🔐 ВХОД с JWT + роль
@@ -98,9 +73,7 @@ namespace EcoApp.API.Controllers
             if (!BCrypt.Net.BCrypt.Verify(model.Password, user.PasswordHash))
                 return Unauthorized("Неверный логин или пароль");
 
-            // Проверяем подтверждение email
-            if (!user.IsEmailConfirmed)
-                return Unauthorized("Подтвердите email перед входом");
+            // ✅ Проверка подтверждения email отключена
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_config["Jwt:Key"]!);
@@ -111,7 +84,7 @@ namespace EcoApp.API.Controllers
                 {
                     new Claim(ClaimTypes.Name, user.Email),
                     new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                    new Claim(ClaimTypes.Role, user.Role) // ⭐ РОЛЬ В ТОКЕНЕ
+                    new Claim(ClaimTypes.Role, user.Role)
                 }),
                 Expires = DateTime.UtcNow.AddHours(2),
                 Issuer = _config["Jwt:Issuer"],
@@ -129,7 +102,7 @@ namespace EcoApp.API.Controllers
                 userId = user.Id,
                 userName = user.Name,
                 email = user.Email,
-                role = user.Role // ⭐ ВОЗВРАЩАЕМ РОЛЬ
+                role = user.Role
             });
         }
     }
