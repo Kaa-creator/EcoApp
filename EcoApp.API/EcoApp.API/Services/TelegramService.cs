@@ -36,7 +36,7 @@ namespace EcoApp.API.Services
                 errorHandler: HandleErrorAsync,
                 receiverOptions: new Telegram.Bot.Polling.ReceiverOptions
                 {
-                    AllowedUpdates = Array.Empty << UpdateType > ()
+                    AllowedUpdates = Array.Empty < UpdateType > ()
                 },
                 cancellationToken: _cts.Token
             );
@@ -84,7 +84,7 @@ namespace EcoApp.API.Services
 
             // ✅ Создаём новый scope для DbContext
             using var scope = _serviceProvider.CreateScope();
-            var context = scope.ServiceProvider.GetRequiredService << AppDbContext > ();
+            var context = scope.ServiceProvider.GetRequiredService < AppDbContext > ();
 
             var existingByChatId = context.TelegramSubscriptions
                 .FirstOrDefault(t => t.ChatId == chatId);
@@ -157,7 +157,7 @@ namespace EcoApp.API.Services
         private async Task HandleStopCommand(ITelegramBotClient botClient, long chatId, CancellationToken cancellationToken)
         {
             using var scope = _serviceProvider.CreateScope();
-            var context = scope.ServiceProvider.GetRequiredService << AppDbContext > ();
+            var context = scope.ServiceProvider.GetRequiredService < AppDbContext > ();
 
             var subscription = context.TelegramSubscriptions
                 .FirstOrDefault(t => t.ChatId == chatId);
@@ -222,7 +222,7 @@ namespace EcoApp.API.Services
             }
 
             using var scope = _serviceProvider.CreateScope();
-            var context = scope.ServiceProvider.GetRequiredService << AppDbContext > ();
+            var context = scope.ServiceProvider.GetRequiredService < AppDbContext > ();
 
             var subscription = context.TelegramSubscriptions
                 .FirstOrDefault(t => t.UserId == userId);
@@ -249,7 +249,7 @@ namespace EcoApp.API.Services
         public async Task BroadcastToSubscribersAsync(string category, string message)
         {
             using var scope = _serviceProvider.CreateScope();
-            var context = scope.ServiceProvider.GetRequiredService << AppDbContext > ();
+            var context = scope.ServiceProvider.GetRequiredService < AppDbContext > ();
 
             var subscribers = context.TelegramSubscriptions
                 .Where(s =>
