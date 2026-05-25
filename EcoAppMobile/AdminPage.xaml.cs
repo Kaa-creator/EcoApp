@@ -289,6 +289,11 @@ public partial class AdminPage : ContentPage
         var descEntry = new Entry { Placeholder = "Описание", Text = point?.Description ?? "", TextColor = Colors.White, PlaceholderColor = Color.FromArgb("#666") };
         var catEntry = new Entry { Placeholder = "Категория", Text = point?.Category ?? "", TextColor = Colors.White, PlaceholderColor = Color.FromArgb("#666") };
         var addrEntry = new Entry { Placeholder = "Адрес", Text = point?.Address ?? "", TextColor = Colors.White, PlaceholderColor = Color.FromArgb("#666") };
+
+        // ✅ НОВЫЕ ПОЛЯ (необязательные)
+        var phoneEntry = new Entry { Placeholder = "Телефон (необязательно)", Text = point?.Phone ?? "", TextColor = Colors.White, PlaceholderColor = Color.FromArgb("#666"), Keyboard = Keyboard.Telephone };
+        var websiteEntry = new Entry { Placeholder = "Веб-сайт (необязательно)", Text = point?.Website ?? "", TextColor = Colors.White, PlaceholderColor = Color.FromArgb("#666"), Keyboard = Keyboard.Url };
+
         var latEntry = new Entry { Placeholder = "Широта", Text = point?.Latitude.ToString() ?? "", TextColor = Colors.White, PlaceholderColor = Color.FromArgb("#666"), Keyboard = Keyboard.Numeric };
         var lonEntry = new Entry { Placeholder = "Долгота", Text = point?.Longitude.ToString() ?? "", TextColor = Colors.White, PlaceholderColor = Color.FromArgb("#666"), Keyboard = Keyboard.Numeric };
 
@@ -299,20 +304,26 @@ public partial class AdminPage : ContentPage
         formLayout.Children.Add(descEntry);
         formLayout.Children.Add(catEntry);
         formLayout.Children.Add(addrEntry);
+        formLayout.Children.Add(phoneEntry);      // ✅ ДОБАВЛЕНО
+        formLayout.Children.Add(websiteEntry);    // ✅ ДОБАВЛЕНО
         formLayout.Children.Add(latEntry);
         formLayout.Children.Add(lonEntry);
 
         var saveBtn = new Button { Text = "💾 Сохранить", BackgroundColor = Color.FromArgb("#4CAF50"), TextColor = Colors.White };
         saveBtn.Clicked += async (s, e) =>
         {
-            if (!double.TryParse(latEntry.Text, out double lat))
+            // ✅ Обрабатываем и точку, и запятую
+            var latText = latEntry.Text.Replace('.', ',');
+            var lonText = lonEntry.Text.Replace('.', ',');
+
+            if (!double.TryParse(latText, out double lat))
             {
-                await DisplayAlert("Ошибка", "Неверная широта", "OK");
+                await DisplayAlert("Ошибка", "Неверная широта. Используйте точку или запятую", "OK");
                 return;
             }
-            if (!double.TryParse(lonEntry.Text, out double lon))
+            if (!double.TryParse(lonText, out double lon))
             {
-                await DisplayAlert("Ошибка", "Неверная долгота", "OK");
+                await DisplayAlert("Ошибка", "Неверная долгота. Используйте точку или запятую", "OK");
                 return;
             }
 
@@ -323,6 +334,8 @@ public partial class AdminPage : ContentPage
                 Description = descEntry.Text,
                 Category = catEntry.Text,
                 Address = addrEntry.Text,
+                Phone = string.IsNullOrWhiteSpace(phoneEntry.Text) ? null : phoneEntry.Text,        // ✅
+                Website = string.IsNullOrWhiteSpace(websiteEntry.Text) ? null : websiteEntry.Text,  // ✅
                 Latitude = lat,
                 Longitude = lon
             };
@@ -876,6 +889,8 @@ public class EcoPointAdmin
     public string Description { get; set; } = "";
     public string Category { get; set; } = "";
     public string Address { get; set; } = "";
+    public string? Phone { get; set; }      // ✅ nullable
+    public string? Website { get; set; }     // ✅ nullable
     public double Latitude { get; set; }
     public double Longitude { get; set; }
 }
