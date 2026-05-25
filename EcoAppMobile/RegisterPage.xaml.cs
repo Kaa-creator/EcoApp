@@ -84,12 +84,13 @@ public partial class RegisterPage : ContentPage
 
             if (response.IsSuccessStatusCode)
             {
+                // ✅ Подтверждение email отключено — сразу сохраняем данные и входим
                 await SecureStorage.SetAsync("tempEmail", email);
                 await SecureStorage.SetAsync("tempPassword", password);
 
                 await DisplayAlert(
                     "Регистрация успешна!",
-                    "На ваш email отправлено письмо с подтверждением. Перейдите по ссылке в письме, затем войдите в приложение.",
+                    "Теперь вы можете войти в приложение.",
                     "OK");
 
                 await Navigation.PopAsync();
