@@ -286,21 +286,8 @@ public partial class ProfilePage : ContentPage
         try
         {
             var botUsername = "ecoapp_belarus_bot";
+            // ✅ Правильная ссылка с deep linking
             var telegramUrl = $"https://t.me/{botUsername}?start=USERID_{_userId}";
-
-            // ✅ Проверяем, подписан ли уже
-            var response = await _httpClient.GetAsync($"{ApiConfig.BaseUrl}/api/Users/{_userId}/telegram-status");
-            if (response.IsSuccessStatusCode)
-            {
-                var json = await response.Content.ReadAsStringAsync();
-                var status = JsonSerializer.Deserialize<TelegramStatusResponse>(json);
-
-                if (status?.IsSubscribed == true)
-                {
-                    await DisplayAlert("Информация", "Вы уже подписаны на уведомления", "OK");
-                    return;
-                }
-            }
 
             var canOpen = await Launcher.CanOpenAsync(telegramUrl);
             if (canOpen)

@@ -15,13 +15,13 @@
             StrokeShape="RoundRectangle 0,0,24,24"
             Padding="20"
             Margin="0,0,0,16"
-            HeightRequest="80">
+            HeightRequest="100">
 
             <Grid ColumnDefinitions="Auto,*,Auto">
                 <Label 
                     Grid.Column="0"
                     Text="🌿" 
-                    FontSize="32"
+                    FontSize="28"
                     VerticalOptions="Center"/>
 
                 <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Margin="12,0">
@@ -32,7 +32,7 @@
                     <Label 
                         x:Name="UserPointsLabel"
                         Text="0" 
-                        FontSize="24"
+                        FontSize="20"
                         FontAttributes="Bold"
                         TextColor="White"/>
                 </VerticalStackLayout>
