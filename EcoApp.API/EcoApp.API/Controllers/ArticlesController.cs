@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using EcoApp.API.Data;
 using EcoApp.API.Models;
+using EcoApp.API.Services;
 
 namespace EcoApp.API.Controllers
 {
@@ -9,25 +10,23 @@ namespace EcoApp.API.Controllers
     public class ArticlesController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly TelegramService _telegramService;  // ← ДОБАВИЛИ
 
-        public ArticlesController(AppDbContext context)
+        public ArticlesController(AppDbContext context, TelegramService telegramService)
         {
             _context = context;
+            _telegramService = telegramService;
         }
 
-        // 📰 Все статьи (с фильтром по категории)
         [HttpGet]
         public IActionResult GetArticles([FromQuery] string? category = null)
         {
             var query = _context.Articles.AsQueryable();
-
             if (!string.IsNullOrEmpty(category))
                 query = query.Where(a => a.Category.ToLower() == category.ToLower());
-
             return Ok(query.ToList());
         }
 
-        // 🔍 Одна статья по ID
         [HttpGet("{id}")]
         public IActionResult GetArticle(int id)
         {
@@ -36,7 +35,6 @@ namespace EcoApp.API.Controllers
             return Ok(article);
         }
 
-        // 🏷️ Список категорий
         [HttpGet("categories")]
         public IActionResult GetCategories()
         {
@@ -45,20 +43,25 @@ namespace EcoApp.API.Controllers
                 .Distinct()
                 .OrderBy(c => c)
                 .ToList();
-
             return Ok(categories);
         }
 
         [HttpPost]
-        public IActionResult CreateArticle(Article article)
+        public async Task<IActionResult> CreateArticle(Article article)  // ← async
         {
             _context.Articles.Add(article);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
+
+            // ✅ РАССЫЛКА УВЕДОМЛЕНИЙ В TELEGRAM
+            await _telegramService.BroadcastToSubscribersAsync("articles",
+                $"📰 Новая статья!\n\n" +
+                $"📌 *{article.Title}*\n" +
+                $"🏷️ Категория: {article.Category}\n\n" +
+                $"🔗 Откройте приложение для прочтения");
 
             return Ok(article);
         }
 
-        // ✏️ Обновление статьи
         [HttpPut("{id}")]
         public IActionResult UpdateArticle(int id, Article article)
         {
@@ -73,7 +76,6 @@ namespace EcoApp.API.Controllers
             return Ok(existing);
         }
 
-        // 🗑️ Удаление статьи
         [HttpDelete("{id}")]
         public IActionResult DeleteArticle(int id)
         {
@@ -82,7 +84,6 @@ namespace EcoApp.API.Controllers
 
             _context.Articles.Remove(article);
             _context.SaveChanges();
-
             return Ok(new { message = "Статья удалена" });
         }
     }

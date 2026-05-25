@@ -1,5 +1,6 @@
 ﻿using EcoApp.API.Data;
 using EcoApp.API.Models;
+using EcoApp.API.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,10 +13,12 @@ namespace EcoApp.API.Controllers
     public class AdminController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly TelegramService _telegramService;
 
-        public AdminController(AppDbContext context)
+        public AdminController(AppDbContext context, TelegramService telegramService)
         {
             _context = context;
+            _telegramService = telegramService;
         }
 
         // ============================================
@@ -71,7 +74,6 @@ namespace EcoApp.API.Controllers
             var user = _context.Users.Find(id);
             if (user == null) return NotFound();
 
-            // Нельзя удалить админа
             if (user.Role == "Admin")
                 return BadRequest("Нельзя удалить администратора");
 
@@ -131,7 +133,7 @@ namespace EcoApp.API.Controllers
         }
 
         // ============================================
-        // 📋 ЗАДАНИЯ (CRUD)
+        // 📋 ЗАДАНИЯ (CRUD) — С УВЕДОМЛЕНИЯМИ
         // ============================================
 
         [HttpGet("ecotasks")]
@@ -141,10 +143,19 @@ namespace EcoApp.API.Controllers
         }
 
         [HttpPost("ecotasks")]
-        public IActionResult CreateEcoTask(EcoTask task)
+        public async Task<IActionResult> CreateEcoTask(EcoTask task)
         {
             _context.EcoTasks.Add(task);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
+
+            // ✅ РАССЫЛКА УВЕДОМЛЕНИЙ В TELEGRAM
+            await _telegramService.BroadcastToSubscribersAsync("tasks",
+                $"📋 Новое задание!\n\n" +
+                $"📌 *{task.Title}*\n" +
+                $"🎁 {task.Points} баллов\n" +
+                $"🏷️ Категория: {task.Category}\n\n" +
+                $"🔗 Откройте приложение для выполнения");
+
             return Ok(task);
         }
 
@@ -177,7 +188,7 @@ namespace EcoApp.API.Controllers
         }
 
         // ============================================
-        // 📰 СТАТЬИ (CRUD)
+        // 📰 СТАТЬИ (CRUD) — С УВЕДОМЛЕНИЯМИ
         // ============================================
 
         [HttpGet("articles")]
@@ -187,10 +198,18 @@ namespace EcoApp.API.Controllers
         }
 
         [HttpPost("articles")]
-        public IActionResult CreateArticle(Article article)
+        public async Task<IActionResult> CreateArticle(Article article)
         {
             _context.Articles.Add(article);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
+
+            // ✅ РАССЫЛКА УВЕДОМЛЕНИЙ В TELEGRAM
+            await _telegramService.BroadcastToSubscribersAsync("articles",
+                $"📰 Новая статья!\n\n" +
+                $"📌 *{article.Title}*\n" +
+                $"🏷️ Категория: {article.Category}\n\n" +
+                $"🔗 Откройте приложение для прочтения");
+
             return Ok(article);
         }
 
@@ -219,8 +238,9 @@ namespace EcoApp.API.Controllers
 
             return Ok(new { message = "Статья удалена" });
         }
+
         // ============================================
-        // 🎉 ЭКО-МЕРОПРИЯТИЯ (CRUD)
+        // 🎉 ЭКО-МЕРОПРИЯТИЯ (CRUD) — С УВЕДОМЛЕНИЯМИ
         // ============================================
 
         [HttpGet("events")]
@@ -234,11 +254,19 @@ namespace EcoApp.API.Controllers
         }
 
         [HttpPost("events")]
-        public IActionResult CreateEvent(EcoEvent ecoEvent)
+        public async Task<IActionResult> CreateEvent(EcoEvent ecoEvent)
         {
             ecoEvent.CreatedAt = DateTime.UtcNow;
             _context.EcoEvents.Add(ecoEvent);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
+
+            // ✅ РАССЫЛКА УВЕДОМЛЕНИЙ В TELEGRAM
+            await _telegramService.BroadcastToSubscribersAsync("events",
+                $"🎉 Новое мероприятие!\n\n" +
+                $"📌 *{ecoEvent.Title}*\n" +
+                $"🏙️ {ecoEvent.City ?? "Онлайн"}\n" +
+                $"📅 {ecoEvent.EventDate:dd.MM.yyyy}\n\n" +
+                $"🔗 Откройте приложение для подробностей");
 
             return Ok(ecoEvent);
         }
@@ -251,8 +279,8 @@ namespace EcoApp.API.Controllers
 
             existing.Title = ecoEvent.Title;
             existing.Description = ecoEvent.Description;
-            existing.City = ecoEvent.City;           // ✅ Может быть null
-            existing.Address = ecoEvent.Address;     // ✅ Может быть null
+            existing.City = ecoEvent.City;
+            existing.Address = ecoEvent.Address;
             existing.EventDate = ecoEvent.EventDate;
             existing.EndDate = ecoEvent.EndDate;
             existing.Category = ecoEvent.Category;
@@ -266,9 +294,6 @@ namespace EcoApp.API.Controllers
             _context.SaveChanges();
             return Ok(existing);
         }
-        // ============================================
-        // 🎉 ЭКО-МЕРОПРИЯТИЯ — УДАЛЕНИЕ (ДОБАВЛЕНО)
-        // ============================================
 
         [HttpDelete("events/{id}")]
         public IActionResult DeleteEvent(int id)
