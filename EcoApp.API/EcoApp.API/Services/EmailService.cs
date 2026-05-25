@@ -1,38 +1,25 @@
-﻿using MailKit.Net.Smtp;
-using MailKit.Security;
-using MimeKit;
+﻿using System.Net.Http.Headers;
+using System.Text;
+using System.Text.Json;
 
 namespace EcoApp.API.Services
 {
     public class EmailService
     {
         private readonly IConfiguration _config;
+        private readonly HttpClient _httpClient;
 
         public EmailService(IConfiguration config)
         {
             _config = config;
+            _httpClient = new HttpClient();
         }
 
         public async Task SendEmailAsync(string toEmail, string subject, string htmlContent)
         {
-            // ✅ Сначала пробуем переменные окружения Railway, потом appsettings
-            var host = Environment.GetEnvironmentVariable("SMTP_HOST")
-                ?? _config["Smtp:Host"]
-                ?? "smtp.mail.ru";
-
-            // ✅ Принудительно 465 + SSL для Mail.ru (Railway стабильнее работает)
-            var portString = Environment.GetEnvironmentVariable("SMTP_PORT")
-                ?? _config["Smtp:Port"]
-                ?? "465";
-
-            var port = int.Parse(portString);
-
-            var username = Environment.GetEnvironmentVariable("SMTP_USERNAME")
-                ?? _config["Smtp:Username"]
-                ?? "ecoapp-belarus@mail.ru";
-
-            var password = Environment.GetEnvironmentVariable("SMTP_PASSWORD")
-                ?? _config["Smtp:Password"]
+            // ✅ Elastic Email API Key
+            var apiKey = Environment.GetEnvironmentVariable("ELASTIC_EMAIL_API_KEY")
+                ?? _config["ElasticEmail:ApiKey"]
                 ?? "";
 
             var fromEmail = Environment.GetEnvironmentVariable("SMTP_FROM_EMAIL")
@@ -43,54 +30,47 @@ namespace EcoApp.API.Services
                 ?? _config["Smtp:FromName"]
                 ?? "EcoApp Belarus";
 
-            // ✅ Детальное логирование
-            Console.WriteLine($"[SMTP CONFIG] Host={host}, Port={port}, User={username}");
-            Console.WriteLine($"[SMTP CONFIG] Password length={password.Length}, From={fromEmail}");
+            Console.WriteLine($"[EMAIL] Sending via Elastic Email to {toEmail}");
+            Console.WriteLine($"[EMAIL] API Key length: {apiKey.Length}");
 
-            if (string.IsNullOrEmpty(password))
+            if (string.IsNullOrEmpty(apiKey))
             {
-                Console.WriteLine($"[EMAIL STUB] Password is empty! To: {toEmail}");
+                Console.WriteLine($"[EMAIL STUB] API Key is empty! To: {toEmail}");
                 return;
             }
 
-            var message = new MimeMessage();
-            message.From.Add(new MailboxAddress(fromName, fromEmail));
-            message.To.Add(new MailboxAddress("", toEmail));
-            message.Subject = subject;
-
-            var bodyBuilder = new BodyBuilder { HtmlBody = htmlContent };
-            message.Body = bodyBuilder.ToMessageBody();
-
-            using var client = new MailKit.Net.Smtp.SmtpClient();
-
             try
             {
-                // ✅ Всегда SSL для Mail.ru (порт 465)
-                var sslOptions = SecureSocketOptions.SslOnConnect;
-                
-                // ✅ Таймаут 15 секунд
-                client.Timeout = 15000;
+                // ✅ Elastic Email REST API v2
+                var url = "https://api.elasticemail.com/v2/email/send";
 
-                Console.WriteLine($"[SMTP CONNECT] {host}:{port} with {sslOptions}, timeout={client.Timeout}ms");
+                var content = new FormUrlEncodedContent(new[]
+                {
+                    new KeyValuePair<string, string>("apikey", apiKey),
+                    new KeyValuePair<string, string>("from", fromEmail),
+                    new KeyValuePair<string, string>("fromName", fromName),
+                    new KeyValuePair<string, string>("to", toEmail),
+                    new KeyValuePair<string, string>("subject", subject),
+                    new KeyValuePair<string, string>("bodyHtml", htmlContent),
+                    new KeyValuePair<string, string>("isTransactional", "true")
+                });
 
-                await client.ConnectAsync(host, port, sslOptions);
+                var response = await _httpClient.PostAsync(url, content);
+                var responseBody = await response.Content.ReadAsStringAsync();
 
-                Console.WriteLine($"[SMTP CONNECTED] {client.IsConnected}, {client.IsSecure}");
+                Console.WriteLine($"[EMAIL RESPONSE] Status: {response.StatusCode}");
+                Console.WriteLine($"[EMAIL RESPONSE] Body: {responseBody}");
 
-                await client.AuthenticateAsync(username, password);
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new Exception($"Elastic Email error: {responseBody}");
+                }
 
-                Console.WriteLine("[SMTP AUTHENTICATED] Sending email...");
-
-                await client.SendAsync(message);
-
-                Console.WriteLine($"[SMTP SUCCESS] Email sent to {toEmail}: {subject}");
-
-                await client.DisconnectAsync(true);
+                Console.WriteLine($"[EMAIL SUCCESS] Sent to {toEmail}");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[SMTP ERROR] {ex.GetType().Name}: {ex.Message}");
-                Console.WriteLine($"[SMTP ERROR] Inner: {ex.InnerException?.Message}");
+                Console.WriteLine($"[EMAIL ERROR] {ex.GetType().Name}: {ex.Message}");
                 throw;
             }
         }
