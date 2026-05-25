@@ -41,6 +41,7 @@ namespace EcoApp.API.Controllers
             return Ok(users);
         }
 
+        // ✅ ИЗМЕНЕНИЕ ПОЛЬЗОВАТЕЛЯ
         [HttpPut("{id}")]
         public IActionResult UpdateUser(int id, [FromBody] UpdateUserModel model)
         {
@@ -53,6 +54,23 @@ namespace EcoApp.API.Controllers
 
             _context.SaveChanges();
             return Ok(user);
+        }
+
+        // ✅ УДАЛЕНИЕ ПОЛЬЗОВАТЕЛЯ
+        [HttpDelete("{id}")]
+        public IActionResult DeleteUser(int id)
+        {
+            var user = _context.Users.Find(id);
+            if (user == null) return NotFound();
+
+            // Нельзя удалить админа
+            if (user.Role == "Admin")
+                return BadRequest(new { message = "Нельзя удалить администратора" });
+
+            _context.Users.Remove(user);
+            _context.SaveChanges();
+
+            return Ok(new { message = "Пользователь удалён" });
         }
 
         [HttpPut("{id}/password")]
