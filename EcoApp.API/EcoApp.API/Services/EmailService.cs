@@ -22,10 +22,10 @@ namespace EcoApp.API.Services
                 ?? _config["Resend:ApiKey"]
                 ?? "";
 
-            // ✅ Resend бесплатный тестовый отправитель
-            var fromEmail = "onboarding@resend.dev";
+            // ✅ Используем подтверждённый email как отправитель
+            var fromEmail = "turkoludmila70@gmail.com";
 
-            Console.WriteLine($"[EMAIL] Sending via Resend to {toEmail}");
+            Console.WriteLine($"[EMAIL] Sending via Resend from {fromEmail} to {toEmail}");
             Console.WriteLine($"[EMAIL] API Key length: {apiKey.Length}");
 
             if (string.IsNullOrEmpty(apiKey))
