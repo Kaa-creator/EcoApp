@@ -277,27 +277,19 @@ public partial class ProfilePage : ContentPage
             var botUsername = "ecoapp_belarus_bot";
             var telegramUrl = $"https://t.me/{botUsername}?start=USERID_{_userId}";
 
-            var canOpen = await Launcher.CanOpenAsync(telegramUrl);
-            if (canOpen)
-            {
-                await Launcher.Default.OpenAsync(telegramUrl);
+            await Launcher.Default.OpenAsync(telegramUrl);
 
-                await DisplayAlert(
-                    "Подписка",
-                    "Открылся Telegram. Нажмите «Start» в боте.\nПосле этого вернитесь в приложение.",
-                    "Понятно");
-            }
-            else
-            {
-                await DisplayAlert(
-                    "Telegram не найден",
-                    $"Найдите бота @{botUsername} и отправьте:\n/start USERID_{_userId}",
-                    "OK");
-            }
+            await DisplayAlert(
+                "Подписка",
+                "Открылся Telegram. Нажмите «Start» в боте.\nПосле этого вернитесь в приложение.",
+                "Понятно");
         }
-        catch (Exception ex)
+        catch
         {
-            await DisplayAlert("Ошибка", ex.Message, "OK");
+            await DisplayAlert(
+                "Telegram не найден",
+                $"Найдите бота @ecoapp_belarus_bot и отправьте:\n/start USERID_{_userId}",
+                "OK");
         }
     }
 

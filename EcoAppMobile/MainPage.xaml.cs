@@ -8,11 +8,46 @@ namespace EcoAppMobile;
 public partial class MainPage : ContentPage
 {
     private bool _isPasswordVisible = false;
+    private const string AppVersion = "1.1";
 
     public MainPage()
     {
         InitializeComponent();
+        CheckVersionAndClearStorage();
         CheckLogin();
+    }
+
+    private async void CheckVersionAndClearStorage()
+    {
+        var savedVersion = await SecureStorage.GetAsync("appVersion");
+        var savedUserId = await SecureStorage.GetAsync("userId");
+        var savedToken = await SecureStorage.GetAsync("token");
+
+        // Отладка: показываем что в SecureStorage
+        // await DisplayAlert("Debug", $"Version: {savedVersion}\nUserId: {savedUserId}\nToken: {savedToken}", "OK");
+
+        // Если версии нет — значит первый запуск, принудительно чистим ВСЁ
+        if (string.IsNullOrEmpty(savedVersion))
+        {
+            SecureStorage.Remove("userId");
+            SecureStorage.Remove("userName");
+            SecureStorage.Remove("userEmail");
+            SecureStorage.Remove("token");
+            SecureStorage.Remove("userRole");
+
+            await SecureStorage.SetAsync("appVersion", AppVersion);
+        }
+        else if (savedVersion != AppVersion)
+        {
+            // Версия изменилась — тоже чистим
+            SecureStorage.Remove("userId");
+            SecureStorage.Remove("userName");
+            SecureStorage.Remove("userEmail");
+            SecureStorage.Remove("token");
+            SecureStorage.Remove("userRole");
+
+            await SecureStorage.SetAsync("appVersion", AppVersion);
+        }
     }
 
     protected override async void OnAppearing()
