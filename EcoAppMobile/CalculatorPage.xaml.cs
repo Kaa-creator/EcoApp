@@ -11,24 +11,33 @@ public partial class CalculatorPage : ContentPage
         InitializeComponent();
     }
 
+    // ✅ ДОБАВЛЕНО: свайп вниз — сброс всего
+    private void OnRefreshing(object sender, EventArgs e)
+    {
+        AluminumEntry.Text = "";
+        PaperEntry.Text = "";
+        PlasticEntry.Text = "";
+        GlassEntry.Text = "";
+        ResultsBorder.IsVisible = false;
+
+        CalcRefreshView.IsRefreshing = false;
+    }
+
     private async void OnCalculateClicked(object sender, EventArgs e)
     {
         try
         {
-            // Парсим ввод
             double aluminum = ParseEntry(AluminumEntry.Text);
             double paper = ParseEntry(PaperEntry.Text);
             double plastic = ParseEntry(PlasticEntry.Text);
             double glass = ParseEntry(GlassEntry.Text);
 
-            // Проверка
             if (aluminum == 0 && paper == 0 && plastic == 0 && glass == 0)
             {
                 await DisplayAlert("Внимание", "Введите хотя бы одно значение", "OK");
                 return;
             }
 
-            // Отправка на сервер
             var client = new HttpClient();
             var data = new
             {
@@ -48,7 +57,6 @@ public partial class CalculatorPage : ContentPage
                 var resultJson = await response.Content.ReadAsStringAsync();
                 var result = JsonSerializer.Deserialize<RecyclingResult>(resultJson);
 
-                // Показываем результаты
                 EnergyLabel.Text = $"Энергия сэкономлена: {result.energySaved} кВт·ч";
                 TreesLabel.Text = $"Деревьев спасено: {result.treesSaved}";
                 WaterLabel.Text = $"Воды сэкономлено: {result.waterSaved} л";
@@ -77,7 +85,6 @@ public partial class CalculatorPage : ContentPage
     }
 }
 
-// Класс для десериализации ответа сервера
 public class RecyclingResult
 {
     public double energySaved { get; set; }

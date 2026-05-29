@@ -21,7 +21,6 @@ public partial class MapPage : ContentPage
         UpdateButtonStyles();
     }
 
-    // ✅ ПЕРЕЗАГРУЗКА ТОЧЕК ПРИ КАЖДОМ ПОЯВЛЕНИИ СТРАНИЦЫ
     protected override async void OnAppearing()
     {
         base.OnAppearing();
@@ -86,7 +85,9 @@ public partial class MapPage : ContentPage
 
                 if (go)
                 {
-                    var url = $"https://www.google.com/maps/dir/?api=1&destination={point.Latitude},{point.Longitude}";
+                    var latStr = point.Latitude.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                    var lonStr = point.Longitude.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                    var url = $"https://www.google.com/maps/dir/?api=1&destination={latStr},{lonStr}";
                     await Launcher.Default.OpenAsync(url);
                 }
             };

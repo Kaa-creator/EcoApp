@@ -68,10 +68,6 @@ public partial class AdminPage : ContentPage
         }
     }
 
-    // ============================================
-    // ПРОВЕРКА ЗАДАНИЙ
-    // ============================================
-
     private async Task LoadReports()
     {
         try
@@ -236,10 +232,6 @@ public partial class AdminPage : ContentPage
         catch (Exception ex) { await DisplayAlert("Ошибка", ex.Message, "OK"); }
     }
 
-    // ============================================
-    // ЭКО-ТОЧКИ (CRUD)
-    // ============================================
-
     private async Task LoadPoints()
     {
         AddTitle("Эко-точки");
@@ -290,12 +282,25 @@ public partial class AdminPage : ContentPage
         var catEntry = new Entry { Placeholder = "Категория", Text = point?.Category ?? "", TextColor = Colors.White, PlaceholderColor = Color.FromArgb("#666") };
         var addrEntry = new Entry { Placeholder = "Адрес", Text = point?.Address ?? "", TextColor = Colors.White, PlaceholderColor = Color.FromArgb("#666") };
 
-        // ✅ НОВЫЕ ПОЛЯ (необязательные)
         var phoneEntry = new Entry { Placeholder = "Телефон (необязательно)", Text = point?.Phone ?? "", TextColor = Colors.White, PlaceholderColor = Color.FromArgb("#666"), Keyboard = Keyboard.Telephone };
         var websiteEntry = new Entry { Placeholder = "Веб-сайт (необязательно)", Text = point?.Website ?? "", TextColor = Colors.White, PlaceholderColor = Color.FromArgb("#666"), Keyboard = Keyboard.Url };
 
-        var latEntry = new Entry { Placeholder = "Широта", Text = point?.Latitude.ToString() ?? "", TextColor = Colors.White, PlaceholderColor = Color.FromArgb("#666"), Keyboard = Keyboard.Numeric };
-        var lonEntry = new Entry { Placeholder = "Долгота", Text = point?.Longitude.ToString() ?? "", TextColor = Colors.White, PlaceholderColor = Color.FromArgb("#666"), Keyboard = Keyboard.Numeric };
+        // ✅ Убран Keyboard.Numeric, добавлен InvariantCulture для отображения точки
+        var latEntry = new Entry
+        {
+            Placeholder = "Широта",
+            Text = point?.Latitude.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "",
+            TextColor = Colors.White,
+            PlaceholderColor = Color.FromArgb("#666")
+        };
+
+        var lonEntry = new Entry
+        {
+            Placeholder = "Долгота",
+            Text = point?.Longitude.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "",
+            TextColor = Colors.White,
+            PlaceholderColor = Color.FromArgb("#666")
+        };
 
         var scroll = new ScrollView();
         var formLayout = new VerticalStackLayout { Spacing = 10, Padding = new Thickness(20) };
@@ -304,15 +309,14 @@ public partial class AdminPage : ContentPage
         formLayout.Children.Add(descEntry);
         formLayout.Children.Add(catEntry);
         formLayout.Children.Add(addrEntry);
-        formLayout.Children.Add(phoneEntry);      // ✅ ДОБАВЛЕНО
-        formLayout.Children.Add(websiteEntry);    // ✅ ДОБАВЛЕНО
+        formLayout.Children.Add(phoneEntry);
+        formLayout.Children.Add(websiteEntry);
         formLayout.Children.Add(latEntry);
         formLayout.Children.Add(lonEntry);
 
         var saveBtn = new Button { Text = "💾 Сохранить", BackgroundColor = Color.FromArgb("#4CAF50"), TextColor = Colors.White };
         saveBtn.Clicked += async (s, e) =>
         {
-            // ✅ Обрабатываем и точку, и запятую
             var latText = latEntry.Text.Replace('.', ',');
             var lonText = lonEntry.Text.Replace('.', ',');
 
@@ -334,8 +338,8 @@ public partial class AdminPage : ContentPage
                 Description = descEntry.Text,
                 Category = catEntry.Text,
                 Address = addrEntry.Text,
-                Phone = string.IsNullOrWhiteSpace(phoneEntry.Text) ? null : phoneEntry.Text,        // ✅
-                Website = string.IsNullOrWhiteSpace(websiteEntry.Text) ? null : websiteEntry.Text,  // ✅
+                Phone = string.IsNullOrWhiteSpace(phoneEntry.Text) ? null : phoneEntry.Text,
+                Website = string.IsNullOrWhiteSpace(websiteEntry.Text) ? null : websiteEntry.Text,
                 Latitude = lat,
                 Longitude = lon
             };
@@ -387,10 +391,6 @@ public partial class AdminPage : ContentPage
         catch (Exception ex) { await DisplayAlert("Ошибка", ex.Message, "OK"); }
     }
 
-    // ============================================
-    // ЗАДАНИЯ (CRUD) — С ФОТО SWITCH
-    // ============================================
-
     private async Task LoadTasks()
     {
         AddTitle("Эко-задания");
@@ -441,7 +441,6 @@ public partial class AdminPage : ContentPage
         var pointsEntry = new Entry { Placeholder = "Баллы", Text = task?.Points.ToString() ?? "10", TextColor = Colors.White, PlaceholderColor = Color.FromArgb("#666"), Keyboard = Keyboard.Numeric };
         var catEntry = new Entry { Placeholder = "Категория", Text = task?.Category ?? "", TextColor = Colors.White, PlaceholderColor = Color.FromArgb("#666") };
 
-        // ✅ SWITCH ДЛЯ ФОТО
         var photoSwitch = new Switch { IsToggled = task?.RequiresPhoto ?? true };
         var photoLabel = new Label { Text = "Требуется фото", TextColor = Colors.White, VerticalOptions = LayoutOptions.Center };
 
@@ -456,7 +455,7 @@ public partial class AdminPage : ContentPage
         formLayout.Children.Add(descEntry);
         formLayout.Children.Add(pointsEntry);
         formLayout.Children.Add(catEntry);
-        formLayout.Children.Add(switchLayout); // ✅ ДОБАВЛЕН SWITCH
+        formLayout.Children.Add(switchLayout);
 
         var saveBtn = new Button { Text = "💾 Сохранить", BackgroundColor = Color.FromArgb("#4CAF50"), TextColor = Colors.White };
         saveBtn.Clicked += async (s, e) =>
@@ -474,7 +473,7 @@ public partial class AdminPage : ContentPage
                 Description = descEntry.Text,
                 Points = points,
                 Category = catEntry.Text,
-                RequiresPhoto = photoSwitch.IsToggled // ✅ ИСПОЛЬЗУЕМ SWITCH
+                RequiresPhoto = photoSwitch.IsToggled
             };
 
             await SaveTask(newTask);
@@ -523,10 +522,6 @@ public partial class AdminPage : ContentPage
         }
         catch (Exception ex) { await DisplayAlert("Ошибка", ex.Message, "OK"); }
     }
-
-    // ============================================
-    // СТАТЬИ (CRUD)
-    // ============================================
 
     private async Task LoadArticles()
     {
@@ -649,10 +644,6 @@ public partial class AdminPage : ContentPage
         }
         catch (Exception ex) { await DisplayAlert("Ошибка", ex.Message, "OK"); }
     }
-
-    // ============================================
-    // АКЦИИ/МЕРОПРИЯТИЯ (CRUD)
-    // ============================================
 
     private async Task LoadEvents()
     {
@@ -796,10 +787,6 @@ public partial class AdminPage : ContentPage
         catch (Exception ex) { await DisplayAlert("Ошибка", ex.Message, "OK"); }
     }
 
-    // ============================================
-    // ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ
-    // ============================================
-
     private async Task SetAuthHeaderAsync()
     {
         var token = await SecureStorage.GetAsync("token");
@@ -864,10 +851,6 @@ public partial class AdminPage : ContentPage
     }
 }
 
-// ============================================
-// МОДЕЛИ ДЛЯ АДМИНКИ
-// ============================================
-
 public class PendingReport
 {
     public int Id { get; set; }
@@ -889,8 +872,8 @@ public class EcoPointAdmin
     public string Description { get; set; } = "";
     public string Category { get; set; } = "";
     public string Address { get; set; } = "";
-    public string? Phone { get; set; }      // ✅ nullable
-    public string? Website { get; set; }     // ✅ nullable
+    public string? Phone { get; set; }
+    public string? Website { get; set; }
     public double Latitude { get; set; }
     public double Longitude { get; set; }
 }

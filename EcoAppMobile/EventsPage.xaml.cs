@@ -126,7 +126,9 @@ public partial class EventsPage : ContentPage
 
             if (openMap && ecoEvent.Latitude.HasValue && ecoEvent.Longitude.HasValue)
             {
-                var url = $"https://www.google.com/maps/dir/?api=1&destination={ecoEvent.Latitude},{ecoEvent.Longitude}";
+                var latStr = ecoEvent.Latitude.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                var lonStr = ecoEvent.Longitude.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                var url = $"https://www.google.com/maps/dir/?api=1&destination={latStr},{lonStr}";
                 await Launcher.Default.OpenAsync(url);
             }
             else if (openMap)
@@ -147,7 +149,9 @@ public partial class EventsPage : ContentPage
             return;
         }
 
-        var url = $"https://www.google.com/maps/dir/?api=1&destination={ecoEvent.Latitude},{ecoEvent.Longitude}";
+        var latStr = ecoEvent.Latitude.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+        var lonStr = ecoEvent.Longitude.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+        var url = $"https://www.google.com/maps/dir/?api=1&destination={latStr},{lonStr}";
         await Launcher.Default.OpenAsync(url);
     }
 }

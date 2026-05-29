@@ -2,7 +2,6 @@
 using System.Text.Json;
 using EcoAppMobile.Helpers;
 using EcoAppMobile.Models;
-using System.Text.RegularExpressions;
 
 namespace EcoAppMobile;
 
@@ -35,10 +34,10 @@ public partial class MainPage : ContentPage
 
     private async void CheckLogin()
     {
+        var token = await SecureStorage.GetAsync("token");
         var userId = await SecureStorage.GetAsync("userId");
-        var role = await SecureStorage.GetAsync("userRole");
 
-        if (!string.IsNullOrEmpty(userId))
+        if (!string.IsNullOrEmpty(token) && !string.IsNullOrEmpty(userId))
         {
             Application.Current.MainPage = new AppShell();
         }
@@ -64,7 +63,6 @@ public partial class MainPage : ContentPage
                 return;
             }
 
-            // ✅ ВАЛИДАЦИЯ EMAIL
             if (!IsValidEmail(email))
             {
                 await DisplayAlert("Ошибка", "Введите корректный email (должен содержать @)", "OK");
@@ -111,7 +109,6 @@ public partial class MainPage : ContentPage
         }
     }
 
-    // ✅ ВАЛИДАЦИЯ EMAIL
     private bool IsValidEmail(string email)
     {
         if (string.IsNullOrWhiteSpace(email)) return false;

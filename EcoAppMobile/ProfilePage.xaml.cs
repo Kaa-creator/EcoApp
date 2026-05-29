@@ -123,15 +123,11 @@ public partial class ProfilePage : ContentPage
         }
     }
 
-    // ============================================
-    // АВАТАРКА
-    // ============================================
-
     private async Task LoadAvatar()
     {
         try
         {
-            var savedPath = await SecureStorage.GetAsync("avatarPath");
+            var savedPath = await SecureStorage.GetAsync($"avatarPath_{_userId}");
 
             MainThread.BeginInvokeOnMainThread(() =>
             {
@@ -141,7 +137,6 @@ public partial class ProfilePage : ContentPage
                 }
                 else
                 {
-                    // ✅ Используем FontImageSource вместо эмодзи
                     AvatarImage.Source = new FontImageSource
                     {
                         Glyph = "🌿",
@@ -170,7 +165,6 @@ public partial class ProfilePage : ContentPage
 
         try
         {
-            // ✅ Запрашиваем разрешение на чтение хранилища
             var status = await Permissions.RequestAsync<Permissions.StorageRead>();
             if (status != PermissionStatus.Granted)
             {
@@ -185,7 +179,6 @@ public partial class ProfilePage : ContentPage
 
             if (photo == null) return;
 
-            // ✅ Копируем в локальную папку приложения (доступную для записи)
             var localPath = Path.Combine(FileSystem.AppDataDirectory, $"avatar_{_userId}.jpg");
 
             using (var sourceStream = await photo.OpenReadAsync())
@@ -194,7 +187,7 @@ public partial class ProfilePage : ContentPage
                 await sourceStream.CopyToAsync(fileStream);
             }
 
-            await SecureStorage.SetAsync("avatarPath", localPath);
+            await SecureStorage.SetAsync($"avatarPath_{_userId}", localPath);
 
             MainThread.BeginInvokeOnMainThread(() =>
             {
@@ -208,10 +201,6 @@ public partial class ProfilePage : ContentPage
             await DisplayAlert("Ошибка", $"Не удалось изменить фото: {ex.Message}", "OK");
         }
     }
-
-    // ============================================
-    // TELEGRAM ПОДПИСКА
-    // ============================================
 
     private bool _isTelegramSubscribed = false;
 
@@ -286,7 +275,6 @@ public partial class ProfilePage : ContentPage
         try
         {
             var botUsername = "ecoapp_belarus_bot";
-            // ✅ Правильная ссылка с deep linking
             var telegramUrl = $"https://t.me/{botUsername}?start=USERID_{_userId}";
 
             var canOpen = await Launcher.CanOpenAsync(telegramUrl);
@@ -342,10 +330,6 @@ public partial class ProfilePage : ContentPage
             await DisplayAlert("Ошибка", ex.Message, "OK");
         }
     }
-
-    // ============================================
-    // ОСТАЛЬНЫЕ МЕТОДЫ
-    // ============================================
 
     private async void OnSaveProfileClicked(object sender, EventArgs e)
     {
@@ -436,7 +420,6 @@ public partial class ProfilePage : ContentPage
             SecureStorage.Remove("userEmail");
             SecureStorage.Remove("token");
             SecureStorage.Remove("userRole");
-            SecureStorage.Remove("avatarPath");
 
             Application.Current.MainPage = new NavigationPage(new MainPage());
         }
