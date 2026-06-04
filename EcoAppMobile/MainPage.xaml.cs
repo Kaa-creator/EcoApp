@@ -8,52 +8,89 @@ namespace EcoAppMobile;
 public partial class MainPage : ContentPage
 {
     private bool _isPasswordVisible = false;
-    private const string AppVersion = "1.1";
+    private const string AppVersion = "1.2";
 
     public MainPage()
     {
         InitializeComponent();
-        CheckVersionAndClearStorage();
-        CheckLogin();
-    }
-
-    private async void CheckVersionAndClearStorage()
-    {
-        var savedVersion = await SecureStorage.GetAsync("appVersion");
-        var savedUserId = await SecureStorage.GetAsync("userId");
-        var savedToken = await SecureStorage.GetAsync("token");
-
-        // Отладка: показываем что в SecureStorage
-        // await DisplayAlert("Debug", $"Version: {savedVersion}\nUserId: {savedUserId}\nToken: {savedToken}", "OK");
-
-        // Если версии нет — значит первый запуск, принудительно чистим ВСЁ
-        if (string.IsNullOrEmpty(savedVersion))
-        {
-            SecureStorage.Remove("userId");
-            SecureStorage.Remove("userName");
-            SecureStorage.Remove("userEmail");
-            SecureStorage.Remove("token");
-            SecureStorage.Remove("userRole");
-
-            await SecureStorage.SetAsync("appVersion", AppVersion);
-        }
-        else if (savedVersion != AppVersion)
-        {
-            // Версия изменилась — тоже чистим
-            SecureStorage.Remove("userId");
-            SecureStorage.Remove("userName");
-            SecureStorage.Remove("userEmail");
-            SecureStorage.Remove("token");
-            SecureStorage.Remove("userRole");
-
-            await SecureStorage.SetAsync("appVersion", AppVersion);
-        }
     }
 
     protected override async void OnAppearing()
     {
         base.OnAppearing();
+        await InitializeAsync();
+    }
 
+    private async Task InitializeAsync()
+    {
+        // Шаг 1: Проверяем, первый ли это запуск после установки
+        // Preferences удаляются при удалении приложения — идеально для флага
+        var hasLaunchedBefore = Preferences.Get("hasLaunchedBefore", false);
+
+        if (!hasLaunchedBefore)
+        {
+            // ✅ Первый запуск — чистим SecureStorage на всякий случай
+            // (могли остаться данные от предыдущей установки)
+            SecureStorage.Remove("userId");
+            SecureStorage.Remove("userName");
+            SecureStorage.Remove("userEmail");
+            SecureStorage.Remove("token");
+            SecureStorage.Remove("userRole");
+            SecureStorage.Remove("appVersion");
+
+            // Помечаем что приложение уже запускалось
+            Preferences.Set("hasLaunchedBefore", true);
+            await SecureStorage.SetAsync("appVersion", AppVersion);
+
+            // Остаёмся на форме входа — ничего больше не делаем
+            return;
+        }
+
+        // Шаг 2: Не первый запуск — проверяем версию приложения
+        await CheckVersionAndClearStorage();
+
+        // Шаг 3: Проверяем сохранённую сессию
+        await CheckLogin();
+
+        // Шаг 4: Если пришли с регистрации — подставляем данные
+        await FillRegistrationData();
+    }
+
+    private async Task CheckVersionAndClearStorage()
+    {
+        var savedVersion = await SecureStorage.GetAsync("appVersion");
+
+        // Если версия изменилась — сбрасываем сессию
+        // (на случай breaking changes в API или структуре данных)
+        if (savedVersion != AppVersion)
+        {
+            SecureStorage.Remove("userId");
+            SecureStorage.Remove("userName");
+            SecureStorage.Remove("userEmail");
+            SecureStorage.Remove("token");
+            SecureStorage.Remove("userRole");
+
+            await SecureStorage.SetAsync("appVersion", AppVersion);
+        }
+    }
+
+    private async Task CheckLogin()
+    {
+        var token = await SecureStorage.GetAsync("token");
+        var userId = await SecureStorage.GetAsync("userId");
+
+        // Нет сохранённой сессии — остаёмся на форме входа
+        if (string.IsNullOrEmpty(token) || string.IsNullOrEmpty(userId))
+        {
+            return;
+        }
+
+        // ✅ Есть сессия — переходим в приложение
+        Application.Current.MainPage = new AppShell();
+    }
+
+    private async Task FillRegistrationData()
+    {
         var savedEmail = await SecureStorage.GetAsync("tempEmail");
         var savedPassword = await SecureStorage.GetAsync("tempPassword");
 
@@ -64,17 +101,6 @@ public partial class MainPage : ContentPage
 
             SecureStorage.Remove("tempEmail");
             SecureStorage.Remove("tempPassword");
-        }
-    }
-
-    private async void CheckLogin()
-    {
-        var token = await SecureStorage.GetAsync("token");
-        var userId = await SecureStorage.GetAsync("userId");
-
-        if (!string.IsNullOrEmpty(token) && !string.IsNullOrEmpty(userId))
-        {
-            Application.Current.MainPage = new AppShell();
         }
     }
 

@@ -6,246 +6,253 @@
     Title="Профиль"
     BackgroundColor="{StaticResource BackgroundDark}">
 
-    <ScrollView>
-        <VerticalStackLayout Spacing="0">
+    <RefreshView 
+        x:Name="ProfileRefreshView"
+        RefreshColor="{StaticResource AccentGreen}"
+        Refreshing="OnRefreshing">
 
-            <!-- ШАПКА С ГРАДИЕНТОМ -->
-            <Grid HeightRequest="280">
-                <BoxView>
-                    <BoxView.Background>
-                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                            <GradientStop Offset="0" Color="#4C1D95"/>
-                            <GradientStop Offset="0.6" Color="#7C3AED"/>
-                            <GradientStop Offset="1" Color="{StaticResource BackgroundDark}"/>
-                        </LinearGradientBrush>
-                    </BoxView.Background>
-                </BoxView>
+        <ScrollView>
+            <VerticalStackLayout Spacing="0">
 
-                <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="12">
+                <!-- ШАПКА С ГРАДИЕНТОМ -->
+                <Grid HeightRequest="280">
+                    <BoxView>
+                        <BoxView.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                <GradientStop Offset="0" Color="#4C1D95"/>
+                                <GradientStop Offset="0.6" Color="#7C3AED"/>
+                                <GradientStop Offset="1" Color="{StaticResource BackgroundDark}"/>
+                            </LinearGradientBrush>
+                        </BoxView.Background>
+                    </BoxView>
 
-                    <!-- АВАТАРКА: Border + Image + TapGestureRecognizer -->
-                    <Border 
-                        WidthRequest="100" 
-                        HeightRequest="100"
-                        StrokeShape="RoundRectangle 50"
-                        BackgroundColor="{StaticResource SurfaceElevated}"
-                        Stroke="{StaticResource AccentGreen}"
-                        StrokeThickness="2">
-                        <Image 
-                            x:Name="AvatarImage"
-                            Aspect="AspectFill"
-                            Source="🌿">
-                            <Image.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="OnAvatarTapped"/>
-                            </Image.GestureRecognizers>
-                        </Image>
-                    </Border>
+                    <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="12">
 
-                    <Label 
-                        x:Name="UserNameLabel"
-                        Text="Загрузка..." 
-                        FontSize="24" 
-                        FontAttributes="Bold"
-                        TextColor="White"
-                        HorizontalOptions="Center"/>
+                        <!-- АВАТАРКА -->
+                        <Border 
+                            WidthRequest="100" 
+                            HeightRequest="100"
+                            StrokeShape="RoundRectangle 50"
+                            BackgroundColor="{StaticResource SurfaceElevated}"
+                            Stroke="{StaticResource AccentGreen}"
+                            StrokeThickness="2">
+                            <Image 
+                                x:Name="AvatarImage"
+                                Aspect="AspectFill"
+                                Source="🌿">
+                                <Image.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnAvatarTapped"/>
+                                </Image.GestureRecognizers>
+                            </Image>
+                        </Border>
 
-                    <Label 
-                        x:Name="UserTagLabel"
-                        Text="🌱 Новичок" 
-                        FontSize="14"
-                        TextColor="{StaticResource AccentGreen}"
-                        FontAttributes="Bold"
-                        HorizontalOptions="Center"/>
+                        <Label 
+                            x:Name="UserNameLabel"
+                            Text="Загрузка..." 
+                            FontSize="24" 
+                            FontAttributes="Bold"
+                            TextColor="White"
+                            HorizontalOptions="Center"/>
 
-                    <Border 
-                        WidthRequest="200"
-                        HeightRequest="8"
-                        BackgroundColor="#00000040"
-                        StrokeShape="RoundRectangle 4"
-                        Padding="0">
-                        <ProgressBar 
-                            x:Name="LevelProgress" 
-                            Progress="0" 
-                            ProgressColor="{StaticResource AccentGreen}"
+                        <Label 
+                            x:Name="UserTagLabel"
+                            Text="🌱 Новичок" 
+                            FontSize="14"
+                            TextColor="{StaticResource AccentGreen}"
+                            FontAttributes="Bold"
+                            HorizontalOptions="Center"/>
+
+                        <Border 
+                            WidthRequest="200"
                             HeightRequest="8"
-                            BackgroundColor="Transparent"/>
+                            BackgroundColor="#00000040"
+                            StrokeShape="RoundRectangle 4"
+                            Padding="0">
+                            <ProgressBar 
+                                x:Name="LevelProgress" 
+                                Progress="0" 
+                                ProgressColor="{StaticResource AccentGreen}"
+                                HeightRequest="8"
+                                BackgroundColor="Transparent"/>
+                        </Border>
+
+                        <Label 
+                            x:Name="ProgressTextLabel"
+                            Text="0 / 100 баллов" 
+                            FontSize="12"
+                            TextColor="White"
+                            HorizontalOptions="Center"/>
+
+                    </VerticalStackLayout>
+                </Grid>
+
+                <!-- КНОПКА TELEGRAM -->
+                <Button 
+                    x:Name="TelegramButton"
+                    Text="🔔 Подписаться на уведомления"
+                    BackgroundColor="{StaticResource SurfaceElevated}"
+                    TextColor="{StaticResource PrimaryPurpleLight}"
+                    BorderColor="{StaticResource PrimaryPurple}"
+                    BorderWidth="2"
+                    CornerRadius="16"
+                    HeightRequest="56"
+                    FontAttributes="Bold"
+                    Margin="16,0,16,16"
+                    Clicked="OnTelegramButtonClicked"/>
+
+                <!-- СТАТИСТИКА -->
+                <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" Margin="16,0,16,8">
+
+                    <Border Grid.Row="0" Grid.Column="0" Style="{StaticResource CardStyle}" Margin="0,0,8,8">
+                        <VerticalStackLayout>
+                            <Label Text="🌟" FontSize="32" HorizontalOptions="Center"/>
+                            <Label x:Name="TotalPointsLabel" Text="0" 
+                                   FontSize="28" FontAttributes="Bold" 
+                                   TextColor="{StaticResource AccentGreen}" HorizontalOptions="Center"/>
+                            <Label Text="Всего баллов" FontSize="12" TextColor="{StaticResource TextSecondary}" HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
                     </Border>
 
-                    <Label 
-                        x:Name="ProgressTextLabel"
-                        Text="0 / 100 баллов" 
-                        FontSize="12"
-                        TextColor="White"
-                        HorizontalOptions="Center"/>
+                    <Border Grid.Row="0" Grid.Column="1" Style="{StaticResource CardStyle}" Margin="8,0,0,8">
+                        <VerticalStackLayout>
+                            <Label Text="✅" FontSize="32" HorizontalOptions="Center"/>
+                            <Label x:Name="CompletedTasksLabel" Text="0" 
+                                   FontSize="28" FontAttributes="Bold" 
+                                   TextColor="{StaticResource AccentBlue}" HorizontalOptions="Center"/>
+                            <Label Text="Выполнено" FontSize="12" TextColor="{StaticResource TextSecondary}" HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
+                    </Border>
 
-                </VerticalStackLayout>
-            </Grid>
+                    <Border Grid.Row="1" Grid.Column="0" Style="{StaticResource CardStyle}" Margin="0,0,8,0">
+                        <VerticalStackLayout>
+                            <Label Text="⏳" FontSize="32" HorizontalOptions="Center"/>
+                            <Label x:Name="PendingTasksLabel" Text="0" 
+                                   FontSize="28" FontAttributes="Bold" 
+                                   TextColor="{StaticResource AccentOrange}" HorizontalOptions="Center"/>
+                            <Label Text="На проверке" FontSize="12" TextColor="{StaticResource TextSecondary}" HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
+                    </Border>
 
-            <!-- КНОПКА TELEGRAM -->
-            <Button 
-                x:Name="TelegramButton"
-                Text="🔔 Подписаться на уведомления"
-                BackgroundColor="{StaticResource SurfaceElevated}"
-                TextColor="{StaticResource PrimaryPurpleLight}"
-                BorderColor="{StaticResource PrimaryPurple}"
-                BorderWidth="2"
-                CornerRadius="16"
-                HeightRequest="56"
-                FontAttributes="Bold"
-                Margin="16,0,16,16"
-                Clicked="OnTelegramButtonClicked"/>
+                    <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource CardStyle}" Margin="8,0,0,0">
+                        <VerticalStackLayout>
+                            <Label Text="💰" FontSize="32" HorizontalOptions="Center"/>
+                            <Label x:Name="TotalEarnedLabel" Text="0" 
+                                   FontSize="28" FontAttributes="Bold" 
+                                   TextColor="{StaticResource PrimaryPurpleLight}" HorizontalOptions="Center"/>
+                            <Label Text="Заработано" FontSize="12" TextColor="{StaticResource TextSecondary}" HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
+                    </Border>
+                </Grid>
 
-            <!-- СТАТИСТИКА -->
-            <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" Margin="16,0,16,8">
+                <!-- ДАННЫЕ ПРОФИЛЯ -->
+                <Border Style="{StaticResource CardStyle}">
+                    <VerticalStackLayout Spacing="16">
 
-                <Border Grid.Row="0" Grid.Column="0" Style="{StaticResource CardStyle}" Margin="0,0,8,8">
-                    <VerticalStackLayout>
-                        <Label Text="🌟" FontSize="32" HorizontalOptions="Center"/>
-                        <Label x:Name="TotalPointsLabel" Text="0" 
-                               FontSize="28" FontAttributes="Bold" 
-                               TextColor="{StaticResource AccentGreen}" HorizontalOptions="Center"/>
-                        <Label Text="Всего баллов" FontSize="12" TextColor="{StaticResource TextSecondary}" HorizontalOptions="Center"/>
+                        <Label Text="📋 Данные профиля" 
+                               FontSize="18" 
+                               FontAttributes="Bold"
+                               TextColor="White"/>
+
+                        <Border Style="{StaticResource InputContainerStyle}">
+                            <Grid ColumnDefinitions="Auto,*" Padding="16,0">
+                                <Label Text="👤" FontSize="20" VerticalOptions="Center"/>
+                                <Entry Grid.Column="1" x:Name="NameEntry" Placeholder="Имя" 
+                                       TextColor="{StaticResource TextPrimary}"
+                                       PlaceholderColor="{StaticResource TextMuted}"
+                                       BackgroundColor="Transparent"
+                                       VerticalOptions="Center"/>
+                            </Grid>
+                        </Border>
+
+                        <Border Style="{StaticResource InputContainerStyle}">
+                            <Grid ColumnDefinitions="Auto,*" Padding="16,0">
+                                <Label Text="✉️" FontSize="20" VerticalOptions="Center"/>
+                                <Entry Grid.Column="1" x:Name="EmailEntry" Placeholder="Email" Keyboard="Email"
+                                       TextColor="{StaticResource TextPrimary}"
+                                       PlaceholderColor="{StaticResource TextMuted}"
+                                       BackgroundColor="Transparent"
+                                       VerticalOptions="Center"/>
+                            </Grid>
+                        </Border>
+
+                        <Border Style="{StaticResource InputContainerStyle}">
+                            <Grid ColumnDefinitions="Auto,*" Padding="16,0">
+                                <Label Text="📱" FontSize="20" VerticalOptions="Center"/>
+                                <Entry Grid.Column="1" x:Name="PhoneEntry" Placeholder="Телефон" Keyboard="Telephone"
+                                       TextColor="{StaticResource TextPrimary}"
+                                       PlaceholderColor="{StaticResource TextMuted}"
+                                       BackgroundColor="Transparent"
+                                       VerticalOptions="Center"/>
+                            </Grid>
+                        </Border>
+
+                        <Button 
+                            Text="💾 Сохранить изменения"
+                            BackgroundColor="{StaticResource AccentGreen}"
+                            TextColor="White"
+                            CornerRadius="12"
+                            HeightRequest="48"
+                            FontAttributes="Bold"
+                            Clicked="OnSaveProfileClicked"/>
+
                     </VerticalStackLayout>
                 </Border>
 
-                <Border Grid.Row="0" Grid.Column="1" Style="{StaticResource CardStyle}" Margin="8,0,0,8">
-                    <VerticalStackLayout>
-                        <Label Text="✅" FontSize="32" HorizontalOptions="Center"/>
-                        <Label x:Name="CompletedTasksLabel" Text="0" 
-                               FontSize="28" FontAttributes="Bold" 
-                               TextColor="{StaticResource AccentBlue}" HorizontalOptions="Center"/>
-                        <Label Text="Выполнено" FontSize="12" TextColor="{StaticResource TextSecondary}" HorizontalOptions="Center"/>
-                    </VerticalStackLayout>
-                </Border>
+                <!-- СМЕНА ПАРОЛЯ -->
+                <Border Style="{StaticResource CardStyle}">
+                    <VerticalStackLayout Spacing="16">
 
-                <Border Grid.Row="1" Grid.Column="0" Style="{StaticResource CardStyle}" Margin="0,0,8,0">
-                    <VerticalStackLayout>
-                        <Label Text="⏳" FontSize="32" HorizontalOptions="Center"/>
-                        <Label x:Name="PendingTasksLabel" Text="0" 
-                               FontSize="28" FontAttributes="Bold" 
-                               TextColor="{StaticResource AccentOrange}" HorizontalOptions="Center"/>
-                        <Label Text="На проверке" FontSize="12" TextColor="{StaticResource TextSecondary}" HorizontalOptions="Center"/>
-                    </VerticalStackLayout>
-                </Border>
+                        <Label Text="🔐 Смена пароля" 
+                               FontSize="18" 
+                               FontAttributes="Bold"
+                               TextColor="White"/>
 
-                <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource CardStyle}" Margin="8,0,0,0">
-                    <VerticalStackLayout>
-                        <Label Text="💰" FontSize="32" HorizontalOptions="Center"/>
-                        <Label x:Name="TotalEarnedLabel" Text="0" 
-                               FontSize="28" FontAttributes="Bold" 
-                               TextColor="{StaticResource PrimaryPurpleLight}" HorizontalOptions="Center"/>
-                        <Label Text="Заработано" FontSize="12" TextColor="{StaticResource TextSecondary}" HorizontalOptions="Center"/>
-                    </VerticalStackLayout>
-                </Border>
-            </Grid>
-
-            <!-- ДАННЫЕ ПРОФИЛЯ -->
-            <Border Style="{StaticResource CardStyle}">
-                <VerticalStackLayout Spacing="16">
-
-                    <Label Text="📋 Данные профиля" 
-                           FontSize="18" 
-                           FontAttributes="Bold"
-                           TextColor="White"/>
-
-                    <Border Style="{StaticResource InputContainerStyle}">
-                        <Grid ColumnDefinitions="Auto,*" Padding="16,0">
-                            <Label Text="👤" FontSize="20" VerticalOptions="Center"/>
-                            <Entry Grid.Column="1" x:Name="NameEntry" Placeholder="Имя" 
+                        <Border Style="{StaticResource InputContainerStyle}">
+                            <Entry x:Name="OldPasswordEntry" Placeholder="Текущий пароль" IsPassword="True"
                                    TextColor="{StaticResource TextPrimary}"
                                    PlaceholderColor="{StaticResource TextMuted}"
                                    BackgroundColor="Transparent"
                                    VerticalOptions="Center"/>
-                        </Grid>
-                    </Border>
+                        </Border>
 
-                    <Border Style="{StaticResource InputContainerStyle}">
-                        <Grid ColumnDefinitions="Auto,*" Padding="16,0">
-                            <Label Text="✉️" FontSize="20" VerticalOptions="Center"/>
-                            <Entry Grid.Column="1" x:Name="EmailEntry" Placeholder="Email" Keyboard="Email"
+                        <Border Style="{StaticResource InputContainerStyle}">
+                            <Entry x:Name="NewPasswordEntry" Placeholder="Новый пароль" IsPassword="True"
                                    TextColor="{StaticResource TextPrimary}"
                                    PlaceholderColor="{StaticResource TextMuted}"
                                    BackgroundColor="Transparent"
                                    VerticalOptions="Center"/>
-                        </Grid>
-                    </Border>
+                        </Border>
 
-                    <Border Style="{StaticResource InputContainerStyle}">
-                        <Grid ColumnDefinitions="Auto,*" Padding="16,0">
-                            <Label Text="📱" FontSize="20" VerticalOptions="Center"/>
-                            <Entry Grid.Column="1" x:Name="PhoneEntry" Placeholder="Телефон" Keyboard="Telephone"
+                        <Border Style="{StaticResource InputContainerStyle}">
+                            <Entry x:Name="ConfirmPasswordEntry" Placeholder="Подтвердите пароль" IsPassword="True"
                                    TextColor="{StaticResource TextPrimary}"
                                    PlaceholderColor="{StaticResource TextMuted}"
                                    BackgroundColor="Transparent"
                                    VerticalOptions="Center"/>
-                        </Grid>
-                    </Border>
+                        </Border>
 
-                    <Button 
-                        Text="💾 Сохранить изменения"
-                        BackgroundColor="{StaticResource AccentGreen}"
-                        TextColor="White"
-                        CornerRadius="12"
-                        HeightRequest="48"
-                        FontAttributes="Bold"
-                        Clicked="OnSaveProfileClicked"/>
+                        <Button 
+                            Text="🔑 Изменить пароль"
+                            BackgroundColor="{StaticResource AccentBlue}"
+                            TextColor="White"
+                            CornerRadius="12"
+                            HeightRequest="48"
+                            FontAttributes="Bold"
+                            Clicked="OnChangePasswordClicked"/>
 
-                </VerticalStackLayout>
-            </Border>
+                    </VerticalStackLayout>
+                </Border>
 
-            <!-- СМЕНА ПАРОЛЯ -->
-            <Border Style="{StaticResource CardStyle}">
-                <VerticalStackLayout Spacing="16">
+                <!-- ВЫХОД -->
+                <Button 
+                    Text="🚪 Выйти из аккаунта"
+                    Style="{StaticResource DangerButton}"
+                    Margin="16,8,16,32"
+                    Clicked="OnLogoutClicked"/>
 
-                    <Label Text="🔐 Смена пароля" 
-                           FontSize="18" 
-                           FontAttributes="Bold"
-                           TextColor="White"/>
+            </VerticalStackLayout>
+        </ScrollView>
 
-                    <Border Style="{StaticResource InputContainerStyle}">
-                        <Entry x:Name="OldPasswordEntry" Placeholder="Текущий пароль" IsPassword="True"
-                               TextColor="{StaticResource TextPrimary}"
-                               PlaceholderColor="{StaticResource TextMuted}"
-                               BackgroundColor="Transparent"
-                               VerticalOptions="Center"/>
-                    </Border>
+    </RefreshView>
 
-                    <Border Style="{StaticResource InputContainerStyle}">
-                        <Entry x:Name="NewPasswordEntry" Placeholder="Новый пароль" IsPassword="True"
-                               TextColor="{StaticResource TextPrimary}"
-                               PlaceholderColor="{StaticResource TextMuted}"
-                               BackgroundColor="Transparent"
-                               VerticalOptions="Center"/>
-                    </Border>
-
-                    <Border Style="{StaticResource InputContainerStyle}">
-                        <Entry x:Name="ConfirmPasswordEntry" Placeholder="Подтвердите пароль" IsPassword="True"
-                               TextColor="{StaticResource TextPrimary}"
-                               PlaceholderColor="{StaticResource TextMuted}"
-                               BackgroundColor="Transparent"
-                               VerticalOptions="Center"/>
-                    </Border>
-
-                    <Button 
-                        Text="🔑 Изменить пароль"
-                        BackgroundColor="{StaticResource AccentBlue}"
-                        TextColor="White"
-                        CornerRadius="12"
-                        HeightRequest="48"
-                        FontAttributes="Bold"
-                        Clicked="OnChangePasswordClicked"/>
-
-                </VerticalStackLayout>
-            </Border>
-
-            <!-- ВЫХОД -->
-            <Button 
-                Text="🚪 Выйти из аккаунта"
-                Style="{StaticResource DangerButton}"
-                Margin="16,8,16,32"
-                Clicked="OnLogoutClicked"/>
-
-        </VerticalStackLayout>
-    </ScrollView>
-
-</ContentPage>
+    </ContentPage>

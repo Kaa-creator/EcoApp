@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage 
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="EcoAppMobile.TaskDetailPage"
+    Title="Задание"
+    BackgroundColor="{StaticResource BackgroundDark}">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="16" Padding="20">
+
+            <!-- Название -->
+            <Label 
+                Text="{Binding Title}" 
+                FontSize="24" 
+                FontAttributes="Bold"
+                TextColor="White"/>
+
+            <!-- Категория -->
+            <Border 
+                BackgroundColor="{StaticResource AccentGreen}"
+                StrokeShape="RoundRectangle 8"
+                Padding="8,4"
+                HorizontalOptions="Start">
+                <Label 
+                    Text="{Binding Category}" 
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    FontSize="12"/>
+            </Border>
+
+            <!-- Полное описание (без ограничений!) -->
+            <Label 
+                Text="{Binding Description}" 
+                FontSize="16" 
+                TextColor="{StaticResource TextSecondary}"
+                LineBreakMode="WordWrap"/>
+
+            <!-- Баллы -->
+            <Border 
+                BackgroundColor="#10B98120"
+                Stroke="{StaticResource AccentGreen}"
+                StrokeThickness="1"
+                StrokeShape="RoundRectangle 8"
+                Padding="12,6"
+                HorizontalOptions="Start">
+                <Label 
+                    Text="{Binding Points, StringFormat='⭐ {0} баллов'}" 
+                    TextColor="{StaticResource AccentGreen}"
+                    FontAttributes="Bold"
+                    FontSize="16"/>
+            </Border>
+
+            <!-- Требуется фото? -->
+            <HorizontalStackLayout 
+                Spacing="8"
+                IsVisible="{Binding RequiresPhoto}">
+                <Label Text="📷" FontSize="20"/>
+                <Label 
+                    Text="Требуется фото для выполнения" 
+                    TextColor="{StaticResource TextSecondary}"
+                    FontSize="14"
+                    VerticalOptions="Center"/>
+            </HorizontalStackLayout>
+
+            <!-- Кнопки действий -->
+            <Button 
+                Text="✅ Выполнить задание"
+                Background="{StaticResource PurpleGradient}"
+                TextColor="White"
+                CornerRadius="12"
+                HeightRequest="52"
+                FontAttributes="Bold"
+                IsVisible="{Binding ShowExecuteButton}"
+                Clicked="OnCompleteClicked"/>
+
+            <HorizontalStackLayout 
+                Spacing="12"
+                IsVisible="{Binding ShowPhotoButtons}"
+                HorizontalOptions="Center">
+
+                <Button 
+                    Text="📷 Камера"
+                    BackgroundColor="{StaticResource AccentBlue}"
+                    TextColor="White"
+                    CornerRadius="12"
+                    HeightRequest="48"
+                    Clicked="OnTakePhotoClicked"/>
+
+                <Button 
+                    Text="🖼️ Галерея"
+                    BackgroundColor="{StaticResource PrimaryPurple}"
+                    TextColor="White"
+                    CornerRadius="12"
+                    HeightRequest="48"
+                    Clicked="OnPickPhotoClicked"/>
+            </HorizontalStackLayout>
+
+            <!-- Статусы -->
+            <VerticalStackLayout 
+                IsVisible="{Binding ShowApprovedIcon}"
+                HorizontalOptions="Center"
+                Spacing="8">
+                <Label 
+                    Text="✅ Выполнено!" 
+                    TextColor="{StaticResource AccentGreen}"
+                    FontAttributes="Bold"
+                    FontSize="20"/>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout 
+                IsVisible="{Binding ShowRejectedIcon}"
+                HorizontalOptions="Center"
+                Spacing="8">
+                <Label 
+                    Text="❌ Отклонено" 
+                    TextColor="{StaticResource AccentRed}"
+                    FontAttributes="Bold"
+                    FontSize="20"/>
+                <Label 
+                    Text="{Binding RetryButtonText}" 
+                    TextColor="{StaticResource TextSecondary}"
+                    FontSize="13"/>
+            </VerticalStackLayout>
+
+            <Button 
+                Text="🔄 Повторить"
+                Background="{StaticResource PurpleGradient}"
+                TextColor="White"
+                CornerRadius="12"
+                HeightRequest="48"
+                FontAttributes="Bold"
+                IsVisible="{Binding ShowRetryButton}"
+                Clicked="OnRetryClicked"/>
+
+            <Label 
+                Text="{Binding StatusText}"
+                TextColor="{Binding StatusColor}"
+                FontSize="14"
+                FontAttributes="Bold"
+                HorizontalOptions="Center"
+                IsVisible="{Binding ShowStatus}"/>
+
+            <!-- Превью фото -->
+            <Image 
+                Source="{Binding PreviewImageSource}"
+                HeightRequest="200" 
+                Aspect="AspectFill"
+                IsVisible="{Binding HasPreviewImage}"
+                Margin="0,8"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+    </ContentPage>

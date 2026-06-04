@@ -37,7 +37,6 @@
                         TextColor="White"/>
                 </VerticalStackLayout>
 
-              
             </Grid>
         </Border>
 
@@ -60,6 +59,11 @@
                             Padding="20"
                             Margin="0,8"
                             StrokeShape="RoundRectangle 20">
+
+                            <!-- ✅ ДОБАВЛЕНО: TapGestureRecognizer для открытия деталей -->
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnTaskTapped" CommandParameter="{Binding .}"/>
+                            </Border.GestureRecognizers>
 
                             <VerticalStackLayout Spacing="12">
 
@@ -89,6 +93,7 @@
                                     </Border>
                                 </Grid>
 
+                                <!-- Описание — оставляем обрезанным (2 строки) в списке -->
                                 <Label 
                                     Text="{Binding Description}" 
                                     FontSize="14" 
@@ -153,37 +158,38 @@
                                     Aspect="AspectFill"
                                     IsVisible="{Binding HasPreviewImage}"
                                     Margin="0,4"/>
+
                                 <!-- ВЫПОЛНЕНО -->
                                 <VerticalStackLayout 
                                     IsVisible="{Binding ShowApprovedIcon}"
                                     HorizontalOptions="Center"
                                     Spacing="8"
                                     Margin="0,12">
-                                <Label 
-                                    Text="Выполнено!" 
-                                    TextColor="{StaticResource AccentGreen}"
-                                    FontAttributes="Bold"
-                                    FontSize="18"
-                                    HorizontalOptions="Center"/>
-                            </VerticalStackLayout>
+                                    <Label 
+                                        Text="Выполнено!" 
+                                        TextColor="{StaticResource AccentGreen}"
+                                        FontAttributes="Bold"
+                                        FontSize="18"
+                                        HorizontalOptions="Center"/>
+                                </VerticalStackLayout>
 
-                            <!-- ОТКЛОНЕНО -->
-                            <VerticalStackLayout 
+                                <!-- ОТКЛОНЕНО -->
+                                <VerticalStackLayout 
                                     IsVisible="{Binding ShowRejectedIcon}"
                                     HorizontalOptions="Center"
                                     Spacing="8"
                                     Margin="0,12">
-                                <Label 
-                                    Text="Отклонено" 
-                                    TextColor="{StaticResource AccentRed}"
-                                    FontAttributes="Bold"
-                                    FontSize="18"
-                                    HorizontalOptions="Center"/>
-                                <Label 
-                                    Text="{Binding RetryButtonText}" 
-                                    TextColor="{StaticResource TextSecondary}"
-                                    FontSize="13"
-                                    HorizontalOptions="Center"/>
+                                    <Label 
+                                        Text="Отклонено" 
+                                        TextColor="{StaticResource AccentRed}"
+                                        FontAttributes="Bold"
+                                        FontSize="18"
+                                        HorizontalOptions="Center"/>
+                                    <Label 
+                                        Text="{Binding RetryButtonText}" 
+                                        TextColor="{StaticResource TextSecondary}"
+                                        FontSize="13"
+                                        HorizontalOptions="Center"/>
                                 </VerticalStackLayout>
 
                                 <Button 

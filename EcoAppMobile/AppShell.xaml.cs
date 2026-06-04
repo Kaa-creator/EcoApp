@@ -15,16 +15,25 @@ public partial class AppShell : Shell
         Routing.RegisterRoute("ProfilePage", typeof(ProfilePage));
         Routing.RegisterRoute("AdminPage", typeof(AdminPage));
 
+        // По умолчанию скрываем админку
         AdminMenuItem.IsVisible = false;
-        CheckAdminRole();
     }
 
-    private void CheckAdminRole()
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+        await CheckAdminRole();
+    }
+
+    private async Task CheckAdminRole()
     {
         try
         {
-            var role = SecureStorage.GetAsync("userRole").Result;
-            AdminMenuItem.IsVisible = (role == "Admin");
+            var role = await SecureStorage.GetAsync("userRole");
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                AdminMenuItem.IsVisible = (role == "Admin");
+            });
         }
         catch
         {

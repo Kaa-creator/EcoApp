@@ -71,7 +71,7 @@ public partial class TasksPage : ContentPage
                 if (response.IsSuccessStatusCode)
                 {
                     var json = await response.Content.ReadAsStringAsync();
-                    var result = JsonSerializer.Deserialize<RetryCheckResult>(json);
+                    var result = JsonSerializer.Deserialize < RetryCheckResult > (json);
 
                     if (result?.canRetry == true)
                     {
@@ -193,7 +193,7 @@ public partial class TasksPage : ContentPage
                             if (retryResponse.IsSuccessStatusCode)
                             {
                                 var retryJson = await retryResponse.Content.ReadAsStringAsync();
-                                var retryResult = JsonSerializer.Deserialize<RetryCheckResult>(retryJson);
+                                var retryResult = JsonSerializer.Deserialize < RetryCheckResult > (retryJson);
                                 viewModel.RetrySecondsRemaining = retryResult?.secondsRemaining ?? 0;
                             }
                         }
@@ -242,6 +242,15 @@ public partial class TasksPage : ContentPage
         }
     }
 
+    // ✅ НОВОЕ: открытие детальной страницы задания
+    private async void OnTaskTapped(object sender, TappedEventArgs e)
+    {
+        if (e.Parameter is EcoTaskViewModel task)
+        {
+            await Navigation.PushAsync(new TaskDetailPage(task));
+        }
+    }
+
     private async void OnCompleteClicked(object sender, EventArgs e)
     {
         var button = sender as Button;
@@ -268,7 +277,7 @@ public partial class TasksPage : ContentPage
 
         try
         {
-            var status = await Permissions.RequestAsync<Permissions.Camera>();
+            var status = await Permissions.RequestAsync < Permissions.Camera > ();
             if (status != PermissionStatus.Granted)
             {
                 await DisplayAlert("Нет доступа", "Разрешите использование камеры", "OK");

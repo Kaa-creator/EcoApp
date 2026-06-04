@@ -40,6 +40,17 @@ public partial class ProfilePage : ContentPage
         await LoadAvatar();
     }
 
+    // ✅ НОВОЕ: обновление через свайп вниз
+    private async void OnRefreshing(object sender, EventArgs e)
+    {
+        await LoadProfile();
+        await LoadStats();
+        await LoadTelegramStatus();
+        await LoadAvatar();
+
+        ProfileRefreshView.IsRefreshing = false;
+    }
+
     private async Task LoadUserId()
     {
         var userIdStr = await SecureStorage.GetAsync("userId");
@@ -165,7 +176,7 @@ public partial class ProfilePage : ContentPage
 
         try
         {
-            var status = await Permissions.RequestAsync<Permissions.StorageRead>();
+            var status = await Permissions.RequestAsync < Permissions.StorageRead > ();
             if (status != PermissionStatus.Granted)
             {
                 await DisplayAlert("Нет доступа", "Разрешите доступ к галерее в настройках телефона", "OK");
